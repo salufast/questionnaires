@@ -14,7 +14,7 @@ export default StyleSheet.create({
     backgroundColor: 'white',
     height: '85%',
     paddingHorizontal: 20,
-    shadowOffset: {width: 2, height: 4}, 
+    shadowOffset: {width: 2, height: 4},
     shadowOpacity: 0.5,
     shadowRadius: 5,
     elevation: 5,
@@ -35,7 +35,7 @@ export default StyleSheet.create({
   },
   progressBar: {
     height: 14,
-    backgroundColor: '#4CB5AB',
+
     width: 60,
     borderRadius: 10,
   },
@@ -55,11 +55,10 @@ export default StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     paddingHorizontal: 10,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-
   },
   padSpace: {paddingHorizontal: 10},
   mainButton: {
@@ -77,4 +76,26 @@ export default StyleSheet.create({
     fontFamily: 'OpenSans-SemiBold',
     fontSize: 16,
   },
+  resultView: {
+    marginVertical: '8%',
+    height: '40%',
+    width: '85%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    justifyContent: 'center',
+    padding: '6%',
+  },
+  resultText: {textAlign: 'center', marginVertical: '3%'},
+  resultButton: {
+    borderRadius: 50,
+    backgroundColor: '#008888',
+    width: '90%',
+    height: '25%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resultButtonText: {fontSize: 16, color: '#FFFFFF'},
+  cardNum: {marginTop: 10, alignItems: 'center'}
 });
