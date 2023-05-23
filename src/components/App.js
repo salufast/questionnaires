@@ -35,9 +35,9 @@ const App = () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: '',
-        password: '',
-      }),
+        "email": "questionnaire@salufast.com",
+        "password": "O%^87p$NW}#vf8K0y?{{"
+        }),
     });
     const tokenPair = await response.json();
     await AsyncStorage.setItem('accessToken', tokenPair.access_token);
