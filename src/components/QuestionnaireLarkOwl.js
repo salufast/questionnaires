@@ -32,7 +32,6 @@ const QuestionnaireLarkOwl = ({navigation}) => {
     });
   }, []);
 
-
   // useEffect(() => {
   //   inOutAnimation(-2, true);
   // }, [clicked]);
@@ -112,8 +111,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
       {showResult ? (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Image source={Owl} />
-          <View
-            style={styles.resultView}>
+          <View style={styles.resultView}>
             <SaluTitle>You are an Owl!</SaluTitle>
             <SaluText style={styles.resultText}>
               Skip breakfast and make lunch your largest meal of the day. Your
@@ -125,9 +123,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
                 navigation.navigate('questionnaires');
               }}
               style={styles.resultButton}>
-              <SaluTitle
-                style={styles.resultButtonText}
-              >
+              <SaluTitle style={styles.resultButtonText}>
                 BACK TO LAST TITLE
               </SaluTitle>
             </TouchableOpacity>
@@ -136,7 +132,11 @@ const QuestionnaireLarkOwl = ({navigation}) => {
       ) : (
         <>
           <View style={styles.cardNum}>
-            {cardIdx <= 4 ? <Text>{cardIdx + 1} of 5</Text> : <></>}
+            {cardIdx <= 4 ? (
+              <Text style={styles.regularFont}>{cardIdx + 1} of 5</Text>
+            ) : (
+              <></>
+            )}
           </View>
           <View style={styles.progressView}>
             {questionnaires?.questionnaires?.[0]?.question_v2s.map(
@@ -161,7 +161,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </Animated.View> */}
-          
+
           <View style={styles.swiperView}>
             <Swiper
               showSecondCard={false}

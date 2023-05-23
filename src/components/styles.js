@@ -1,6 +1,11 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
+  regularFont: {
+    fontSize: 16,
+    fontFamily: 'OpenSans-Regular',
+    color: '#4D4D4D',
+  },
   container: {
     flex: 1,
     backgroundColor: '#Faa',
@@ -97,5 +102,5 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   resultButtonText: {fontSize: 16, color: '#FFFFFF'},
-  cardNum: {marginTop: 10, alignItems: 'center'}
+  cardNum: {marginTop: 10, alignItems: 'center'},
 });
