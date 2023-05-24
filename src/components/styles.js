@@ -61,7 +61,7 @@ export default StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     paddingHorizontal: 10,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
@@ -131,7 +131,8 @@ export default StyleSheet.create({
     alignItems: 'center',
     width: 310,
     marginHorizontal: 50,
-  },tile: {
+  },
+  tile: {
     height: '40%',
     width: '85%',
     alignSelf: 'center',
@@ -140,5 +141,21 @@ export default StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     padding: '6%',
-  }
+  },
+  box: {
+    width: 200,
+    height: 200,
+    backgroundColor: 'yellow',
+  },
+  button: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  fastingProt: {flex: 1, alignItems: 'center', justifyContent: 'center'},
 });
