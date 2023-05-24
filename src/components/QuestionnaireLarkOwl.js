@@ -164,10 +164,11 @@ const QuestionnaireLarkOwl = ({navigation}) => {
 
           <View style={styles.swiperView}>
             <Swiper
-              showSecondCard={false}
+              // showSecondCard={false}
               ref={swiper}
               disableLeftSwipe={true}
               disableTopSwipe={true}
+              disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
               renderCard={renderCard}
               onSwiped={cardIndex => {

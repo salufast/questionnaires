@@ -52,6 +52,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     height: '60%',
+    marginVertical: 16,
   },
   options: {
     width: '100%',
@@ -100,7 +101,44 @@ export default StyleSheet.create({
     height: '25%',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
   },
   resultButtonText: {fontSize: 16, color: '#FFFFFF'},
   cardNum: {marginTop: 10, alignItems: 'center'},
+  resultProgress: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOffset: {width: 2, height: 4},
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  midVal: {
+    alignSelf: 'center',
+    bottom: 255,
+    fontSize: 50,
+    color: '#008888',
+  },
+  graphVal: {
+    alignSelf: 'flex-end',
+    bottom: 255,
+    fontSize: 25,
+    color: '#808080',
+  },
+  graphValView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: 310,
+    marginHorizontal: 50,
+  },tile: {
+    height: '40%',
+    width: '85%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    justifyContent: 'center',
+    padding: '6%',
+  }
 });
