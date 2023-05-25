@@ -6,19 +6,15 @@ import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
-import {Checkmark, Owl, Radio} from '../utils/images';
+import {Owl} from '../utils/images';
+import Card from './Options';
 
 const QuestionnaireLarkOwl = ({navigation}) => {
   const [getQuestionnaires, {data: questionnaires}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const swiper = useRef();
   const [cardIdx, setCardIdx] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
-  const [rightAns, setRightAns] = useState(false);
-  const [clicked, setClicked] = useState(false);
-  // const an = new Animated.Value(0);
-  // const scale = an.interpolate({ inputRange: [0, 1], outputRange: [1, 0.8] });
 
   useEffect(() => {
     getQuestionnaires({
@@ -32,79 +28,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   inOutAnimation(-2, true);
-  // }, [clicked]);
 
-  // const faddIn = () => {
-  //     inOutAnimation(5, false);
-  // };
-
-  // const inOutAnimation = (Value, frictionValue) => {
-  //   Animated.spring(an, {
-  //     toValue: Value,
-  //     friction: frictionValue ? 4 : 7,
-  //     useNativeDriver: true,
-  //   }).start();
-  // };
-
-  const handleOptionPress = option => {
-    setSelectedOption(option);
-  };
-
-  const renderCard = (item, index) => {
-    return (
-      <View style={styles.card}>
-        <SaluText style={{color: '#808080'}}>Choose an answer</SaluText>
-        <SaluTitle>{item?.title}</SaluTitle>
-        <View style={styles.questOpt}>
-          {item?.answer_v2s.map((item, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                activeOpacity={0.7}
-                onPress={() => {
-                  handleOptionPress(index);
-                }}
-                style={[
-                  styles.options,
-                  {
-                    backgroundColor:
-                      selectedOption === index ? '#4CB5AB' : '#FAFAFA',
-                  },
-                ]}>
-                <Image source={Radio} />
-                <SaluText style={styles.padSpace}>{item?.text}</SaluText>
-                {/* implementing animation */}
-                {rightAns && (
-                  <Image
-                    source={Checkmark}
-                    style={{position: 'absolute', left: '5%'}}
-                  />
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <View style={styles.mainButton}>
-          <TouchableOpacity
-            style={styles.m_button}
-            onPress={() => swiper.current.swipeBack()}>
-            <Text style={styles.backText}>BACK</Text>
-          </TouchableOpacity>
-          {/* <AnimatedButton /> */}
-          <TouchableOpacity
-            onPress={() => swiper.current.swipeLeft()}
-            style={[
-              styles.m_button,
-              {backgroundColor: '#008888', borderRadius: 10},
-            ]}>
-            <Text style={[styles.backText, {color: 'white'}]}>NEXT</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
 
   return (
     <View style={styles.testContainer}>
@@ -142,7 +66,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
             {questionnaires?.questionnaires?.[0]?.question_v2s.map(
               (item, index) => (
                 <View
-                  key={index}
+                  key={item.index}
                   style={[
                     styles.progressBar,
                     {
@@ -153,24 +77,15 @@ const QuestionnaireLarkOwl = ({navigation}) => {
               ),
             )}
           </View>
-
-          {/* ---- */}
-          {/* <Animated.View>
-            <View style={{backgroundColor: 'yellow'}}>
-              <TouchableOpacity onPress={() => faddIn()}>
-              </TouchableOpacity>
-            </View>
-          </Animated.View> */}
-
           <View style={styles.swiperView}>
             <Swiper
-              // showSecondCard={false}
+              showSecondCard={false}
               ref={swiper}
               disableLeftSwipe={true}
               disableTopSwipe={true}
               disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={renderCard}
+              renderCard={card => <Card item={card} ref={swiper}/>}
               onSwiped={cardIndex => {
                 console.log('hellboy', cardIndex);
                 setCardIdx(cardIndex + 1);

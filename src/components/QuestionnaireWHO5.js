@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
@@ -8,8 +8,8 @@ import {Checkmark, Owl, Radio} from '../utils/images';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
-import {VictoryPie} from 'victory-native';
 import SemiCircleProgressBar from './ProgressSvg';
+import Card from './Options';
 
 const QuestionnaireWHO5 = () => {
   const [getQuestionnaires, {data: questionnaires}] =
@@ -98,7 +98,7 @@ const QuestionnaireWHO5 = () => {
       {showResult ? (
         <View
           style={styles.resultProgress}>
-          <View style={styles.graphView}>
+          <View style={{height: '55%'}}>
             <SemiCircleProgressBar percentage={winPercent} />
             <Text
               style={styles.midVal}>
@@ -166,7 +166,7 @@ const QuestionnaireWHO5 = () => {
               disableTopSwipe={true}
               disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={renderCard}
+              renderCard={card => <Card item={card} ref={swiper}/>}
               onSwiped={cardIndex => {
                 console.log('hellboy', cardIndex);
                 setCardIdx(cardIndex + 1);
