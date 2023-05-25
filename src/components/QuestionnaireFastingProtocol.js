@@ -1,14 +1,15 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {FlatList, View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
 import Card from './Options';
 import Swiper from 'react-native-deck-swiper';
-import {Owl, Smiley} from '../utils/images';
+import {Smiley} from '../utils/images';
 import { useNavigation } from '@react-navigation/native';
+import ProgressBar from './ProgressBar';
 
 const QuestionnaireFastingProtocol = ({route}) => {
   const {programDay} = route.params || {};
@@ -83,25 +84,16 @@ const QuestionnaireFastingProtocol = ({route}) => {
         <>
           <View style={styles.cardNum}>
             {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>{cardIdx + 1} of 5</Text>
+              <Text style={styles.regularFont}>{cardIdx + 1} of {""}{fastingProtocolQuestionnaire?.question_v2s?.length}</Text>
             ) : (
               <></>
             )}
           </View>
           <View style={styles.progressView}>
-            {fastingProtocolQuestionnaire?.questionnaires?.[0]?.question_v2s.map(
-              (item, index) => (
-                <View
-                  key={item.index}
-                  style={[
-                    styles.progressBar,
-                    {
-                      backgroundColor: false ? '#4CB5AB' : '#D3D3D3',
-                    },
-                  ]}
-                />
-              ),
-            )}
+          <ProgressBar
+              data={fastingProtocolQuestionnaire?.question_v2s}
+              cardIdx={cardIdx}
+            />
           </View>
           <View style={styles.swiperView}>
             <Swiper
@@ -111,7 +103,9 @@ const QuestionnaireFastingProtocol = ({route}) => {
               disableTopSwipe={true}
               disableBottomSwipe={true}
               cards={fastingProtocolQuestionnaire?.question_v2s || []}
-              renderCard={card => <Card item={card} ref={swiper} />}
+              renderCard={(card) => {
+                return <Card item={card} ref={swiper} multiple={card?.allow_multiple_answers}/>;
+              }}
               onSwiped={cardIndex => {
                 setCardIdx(cardIndex + 1);
               }}
@@ -119,7 +113,7 @@ const QuestionnaireFastingProtocol = ({route}) => {
                 console.log('onSwipedAll');
                 setShowResult(true);
               }}
-              stackSize={5}></Swiper>
+              stackSize={5}/>
           </View>
         </>
       )}

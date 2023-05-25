@@ -8,6 +8,7 @@ import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
 import {Owl} from '../utils/images';
 import Card from './Options';
+import ProgressBar from './ProgressBar';
 
 const QuestionnaireLarkOwl = ({navigation}) => {
   const [getQuestionnaires, {data: questionnaires}] =
@@ -27,8 +28,6 @@ const QuestionnaireLarkOwl = ({navigation}) => {
       },
     });
   }, []);
-
-
 
   return (
     <View style={styles.testContainer}>
@@ -57,38 +56,37 @@ const QuestionnaireLarkOwl = ({navigation}) => {
         <>
           <View style={styles.cardNum}>
             {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>{cardIdx + 1} of 5</Text>
+              <Text style={styles.regularFont}>
+                {cardIdx + 1} of {""}
+                {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
+              </Text>
             ) : (
               <></>
             )}
           </View>
           <View style={styles.progressView}>
-            {questionnaires?.questionnaires?.[0]?.question_v2s.map(
-              (item, index) => (
-                <View
-                  key={item.index}
-                  style={[
-                    styles.progressBar,
-                    {
-                      backgroundColor: false ? '#4CB5AB' : '#D3D3D3',
-                    },
-                  ]}
-                />
-              ),
-            )}
+            <ProgressBar
+              data={questionnaires?.questionnaires?.[0]?.question_v2s}
+              cardIdx={cardIdx}
+            />
           </View>
           <View style={styles.swiperView}>
             <Swiper
-              showSecondCard={false}
               ref={swiper}
-              disableLeftSwipe={true}
+              showSecondCard={false}
               disableTopSwipe={true}
+              disableLeftSwipe={true}
               disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={card => <Card item={card} ref={swiper}/>}
-              onSwiped={cardIndex => {
-                console.log('hellboy', cardIndex);
-                setCardIdx(cardIndex + 1);
+              renderCard={(card, index) => {
+                setCardIdx(index);
+                return (
+                  <Card
+                    item={card}
+                    ref={swiper}
+                    multiple={card?.allow_multiple_answers}
+                  />
+                );
               }}
               onSwipedAll={() => {
                 console.log('onSwipedAll');

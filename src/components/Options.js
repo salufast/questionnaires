@@ -3,14 +3,12 @@ import React, {useState, useRef} from 'react';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
 import styles from './styles';
-import {Checkmark, Radio} from '../utils/images';
+import {Checkbox, Checkmark, Radio} from '../utils/images';
 
-const Card = React.forwardRef(({item}, swiper) => {
+const Card = React.forwardRef(({item, multiple}, swiper) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const scaleValue = useRef(new Animated.Value(1)).current;
-  const backgroundColorValue = useRef(new Animated.Value(0)).current;
-  const [viewHeight] = useState(new Animated.Value(200)); // Initial height of the view
   const handleSelectOption = option => {
     setSelectedOption(option);
   };
@@ -36,7 +34,6 @@ const Card = React.forwardRef(({item}, swiper) => {
       }).start();
     });
   };
-
 
   return (
     <View style={styles.card}>
@@ -68,7 +65,7 @@ const Card = React.forwardRef(({item}, swiper) => {
                     ],
                   },
                 ]}>
-                <Image source={Radio} />
+                <Image source={multiple ? Checkbox : Radio} />
                 {isCorrectOption(item) && (
                   <Image
                     source={Checkmark}

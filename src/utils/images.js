@@ -5,3 +5,4 @@ export const Owl = require("../../assets/icons/Owl.png");
 export const LarknOwl = require('../../assets/icons/LarknOwl.png')
 export const LarkO = require('../../assets/icons/LarkO.png')
 export const Smiley = require('../../assets/icons/Smiley.png')
+export const Checkbox = require('../../assets/icons/CheckBox.png')

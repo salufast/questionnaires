@@ -40,7 +40,6 @@ export default StyleSheet.create({
   },
   progressBar: {
     height: 14,
-
     width: 60,
     borderRadius: 10,
   },
