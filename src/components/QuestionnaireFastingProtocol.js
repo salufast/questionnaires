@@ -103,11 +103,9 @@ const QuestionnaireFastingProtocol = ({route}) => {
               disableTopSwipe={true}
               disableBottomSwipe={true}
               cards={fastingProtocolQuestionnaire?.question_v2s || []}
-              renderCard={(card) => {
+              renderCard={(card, index) => {
+                setCardIdx(index);
                 return <Card item={card} ref={swiper} multiple={card?.allow_multiple_answers}/>;
-              }}
-              onSwiped={cardIndex => {
-                setCardIdx(cardIndex + 1);
               }}
               onSwipedAll={() => {
                 console.log('onSwipedAll');

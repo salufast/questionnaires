@@ -1,11 +1,10 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
-import {Checkmark, Owl, Radio} from '../utils/images';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
 import SemiCircleProgressBar from './ProgressSvg';
@@ -17,7 +16,7 @@ const QuestionnaireWHO5 = () => {
     useLazyQuery(GET_QUESTIONNAIRES);
   const swiper = useRef();
   const navigation = useNavigation();
-  const [cardIdx, setCardIdx] = useState(0);
+  const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [winPercent, setWinPercent] = useState(90);
   const [correctAns, setCorrectAns] = useState(23);
@@ -69,7 +68,7 @@ const QuestionnaireWHO5 = () => {
           <View style={styles.cardNum}>
             {cardIdx <= 4 ? (
               <Text style={styles.regularFont}>
-                {cardIdx + 1} of
+                {cardIdx + 1} of {""}
                 {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
               </Text>
             ) : (
@@ -89,7 +88,8 @@ const QuestionnaireWHO5 = () => {
               disableTopSwipe={true}
               disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={card => {
+              renderCard={(card,index) => {
+                setCardIdx(index);
                 return (
                   <Card
                     item={card}
@@ -97,10 +97,6 @@ const QuestionnaireWHO5 = () => {
                     multiple={card?.allow_multiple_answers}
                   />
                 );
-              }}
-              onSwiped={cardIndex => {
-                console.log('hellboy', cardIndex);
-                setCardIdx(cardIndex + 1);
               }}
               onSwipedAll={() => {
                 console.log('onSwipedAll');

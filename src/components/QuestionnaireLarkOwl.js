@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, Image, TouchableOpacity, Animated} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
 import styles from './styles';
@@ -14,7 +14,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
   const [getQuestionnaires, {data: questionnaires}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const swiper = useRef();
-  const [cardIdx, setCardIdx] = useState(0);
+  const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
@@ -55,11 +55,8 @@ const QuestionnaireLarkOwl = ({navigation}) => {
       ) : (
         <>
           <View style={styles.cardNum}>
-            {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>
-                {cardIdx + 1} of {""}
-                {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
-              </Text>
+          {cardIdx <= 4 ? (
+              <Text style={styles.regularFont}>{cardIdx + 1} of {""}{questionnaires?.questionnaires?.[0]?.question_v2s?.length}</Text>
             ) : (
               <></>
             )}
