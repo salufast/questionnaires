@@ -1,15 +1,14 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Animated, Easing} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
 import {useNavigation} from '@react-navigation/native';
-import SaluTitle from '../saluComponents/SaluTitle';
-import SaluText from '../saluComponents/SaluText';
-import SemiCircleProgressBar from './ProgressSvg';
 import Card from './Options';
 import ProgressBar from './ProgressBar';
+import { resultData } from '../utils/constant';
+import Result from './Result';
 
 const QuestionnaireWHO5 = () => {
   const [getQuestionnaires, {data: questionnaires}] =
@@ -20,6 +19,8 @@ const QuestionnaireWHO5 = () => {
   const [showResult, setShowResult] = useState(false);
   const [winPercent, setWinPercent] = useState(90);
   const [correctAns, setCorrectAns] = useState(23);
+  const [animation] = useState(new Animated.Value(0));
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     getQuestionnaires({
@@ -33,42 +34,55 @@ const QuestionnaireWHO5 = () => {
     });
   }, []);
 
+  console.log(
+    'thisi s WHO question',
+    questionnaires?.questionnaires?.[0]?.question_v2s,
+  );
+  console.log(
+    'thisi s WHO 322432question',
+    swiper?.current?.state?.firstCardIndex,
+  );
+
+  console.log(cardIdx, 'this is cardIndex-09080');
+
+
+
+  useEffect(() => {
+    // Define the animation configuration
+    const animationConfig = {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: false,
+    };
+
+    // Start the animation
+    setTimeout(() => {
+      Animated.timing(animation, animationConfig).start();
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.in,
+        useNativeDriver: true,
+      }).start();
+    }, 200);
+  }, [fadeAnim]);
+
+  // Define the interpolated height based on the animation value
+  const interpolatedHeight = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['85%', '40%'], // Adjust the output range as needed
+  });
 
   return (
-    <View style={{flexGrow: 1, backgroundColor: '#eee'}}>
+    <View style={styles.testContainer}>
       {showResult ? (
-        <View style={styles.resultProgress}>
-          <View style={{height: '55%'}}>
-            <SemiCircleProgressBar percentage={winPercent} />
-            <Text style={styles.midVal}>23</Text>
-            <View style={styles.graphValView}>
-              <Text style={styles.graphVal}>0</Text>
-              <Text style={styles.graphVal}>25</Text>
-            </View>
-          </View>
-          <View style={styles.tile}>
-            <SaluTitle>You've reached {winPercent}%!</SaluTitle>
-            <SaluText style={styles.resultText}>
-              Your WHO-5 raw score is {correctAns}. That means your wellbeing
-              has been excellent the last two weeks.
-            </SaluText>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('questionnaires');
-              }}
-              style={styles.resultButton}>
-              <SaluTitle style={styles.resultButtonText}>
-                BACK TO LAST TITLE
-              </SaluTitle>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Result title={resultData[2].title} description={resultData[2].description} image={false} />
       ) : (
         <>
           <View style={styles.cardNum}>
             {cardIdx <= 4 ? (
               <Text style={styles.regularFont}>
-                {cardIdx + 1} of {""}
+                {cardIdx + 1} of {''}
                 {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
               </Text>
             ) : (
@@ -76,9 +90,9 @@ const QuestionnaireWHO5 = () => {
             )}
           </View>
           <View style={styles.progressView}>
-            <ProgressBar
+          <ProgressBar
               data={questionnaires?.questionnaires?.[0]?.question_v2s}
-              cardIdx={swiper?.current?.state?.firstCardIndex}
+              cardIdx={cardIdx}
             />
           </View>
           <View style={styles.swiperView}>
@@ -88,8 +102,7 @@ const QuestionnaireWHO5 = () => {
               disableTopSwipe={true}
               disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={(card,index) => {
-                setCardIdx(index);
+              renderCard={card => {
                 return (
                   <Card
                     item={card}
@@ -98,11 +111,14 @@ const QuestionnaireWHO5 = () => {
                   />
                 );
               }}
+              onSwiped={cardIndex => {
+                setCardIdx(swiper?.current?.state?.firstCardIndex + 1);
+              }}
               onSwipedAll={() => {
-                console.log('onSwipedAll');
                 setShowResult(true);
               }}
-              stackSize={5}></Swiper>
+              stackSize={5}
+            />
           </View>
         </>
       )}

@@ -1,21 +1,22 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
-import SaluTitle from '../saluComponents/SaluTitle';
-import SaluText from '../saluComponents/SaluText';
+import {View, Text, Image, TouchableOpacity, Animated} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
 import {Owl} from '../utils/images';
 import Card from './Options';
 import ProgressBar from './ProgressBar';
+import Result from './Result';
+import {resultData} from '../utils/constant';
 
-const QuestionnaireLarkOwl = ({navigation}) => {
+const QuestionnaireLarkOwl = () => {
   const [getQuestionnaires, {data: questionnaires}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const swiper = useRef();
   const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [animation] = useState(new Animated.Value(0));
 
   useEffect(() => {
     getQuestionnaires({
@@ -29,34 +30,42 @@ const QuestionnaireLarkOwl = ({navigation}) => {
     });
   }, []);
 
+  useEffect(() => {
+    // Define the animation configuration
+    const animationConfig = {
+      toValue: 1,
+      duration: 400,
+      delay: 1000,
+      useNativeDriver: false,
+    };
+    // Start the animation
+    setTimeout(() => {
+      Animated.timing(animation, animationConfig).start();
+    }, 200);
+  }, [showResult]);
+
+  // Define the interpolated height based on the animation value
+  const interpolatedHeight = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['85%', '40%'], // Adjust the output range as needed
+  });
+
   return (
     <View style={styles.testContainer}>
       {showResult ? (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={Owl} />
-          <View style={styles.resultView}>
-            <SaluTitle>You are an Owl!</SaluTitle>
-            <SaluText style={styles.resultText}>
-              Skip breakfast and make lunch your largest meal of the day. Your
-              last meal of the day should be at least 3 hours before going to
-              bed.
-            </SaluText>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('questionnaires');
-              }}
-              style={styles.resultButton}>
-              <SaluTitle style={styles.resultButtonText}>
-                BACK TO LAST TITLE
-              </SaluTitle>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Result
+          title={resultData[0]?.title}
+          description={resultData[0]?.description}
+          image={Owl}
+        />
       ) : (
         <>
           <View style={styles.cardNum}>
-          {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>{cardIdx + 1} of {""}{questionnaires?.questionnaires?.[0]?.question_v2s?.length}</Text>
+            {cardIdx <= 4 ? (
+              <Text style={styles.regularFont}>
+                {cardIdx + 1} of {''}
+                {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
+              </Text>
             ) : (
               <></>
             )}
@@ -74,6 +83,7 @@ const QuestionnaireLarkOwl = ({navigation}) => {
               disableTopSwipe={true}
               disableLeftSwipe={true}
               disableBottomSwipe={true}
+              swipeAnimationDuration={cardIdx === 4 ? 0 : 350}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
               renderCard={(card, index) => {
                 setCardIdx(index);

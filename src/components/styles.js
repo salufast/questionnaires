@@ -17,7 +17,6 @@ export default StyleSheet.create({
     borderColor: '#E8E8E8',
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    height: '85%',
     paddingHorizontal: 20,
     shadowOffset: {width: 2, height: 4},
     shadowOpacity: 0.5,
@@ -29,7 +28,7 @@ export default StyleSheet.create({
     fontSize: 50,
     backgroundColor: 'transparent',
   },
-  testContainer: {flexGrow: 1, backgroundColor: '#eee'},
+  testContainer: {flexGrow: 1, backgroundColor: '#EEEEEE'},
   progressView: {
     height: 30,
     marginVertical: 15,
@@ -45,12 +44,12 @@ export default StyleSheet.create({
   },
   swiperView: {
     bottom: '8%',
-  },
+  },  
   questOpt: {
     marginVertical: 10,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
-    height: '60%',
+    height: '61%',
     marginVertical: 16,
   },
   options: {
@@ -89,7 +88,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 20,
-    justifyContent: 'center',
     padding: '6%',
   },
   resultText: {textAlign: 'center', marginVertical: '3%'},
@@ -144,7 +142,6 @@ export default StyleSheet.create({
   box: {
     width: 200,
     height: 200,
-    backgroundColor: 'yellow',
   },
   button: {
     marginTop: 20,
