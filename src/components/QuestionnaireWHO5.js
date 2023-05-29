@@ -4,7 +4,6 @@ import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
 import {View, Text, TouchableOpacity, Animated, Easing} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
-import {useNavigation} from '@react-navigation/native';
 import Card from './Options';
 import ProgressBar from './ProgressBar';
 import { resultData } from '../utils/constant';
@@ -14,11 +13,8 @@ const QuestionnaireWHO5 = () => {
   const [getQuestionnaires, {data: questionnaires}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const swiper = useRef();
-  const navigation = useNavigation();
   const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [winPercent, setWinPercent] = useState(90);
-  const [correctAns, setCorrectAns] = useState(23);
   const [animation] = useState(new Animated.Value(0));
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -33,19 +29,6 @@ const QuestionnaireWHO5 = () => {
       },
     });
   }, []);
-
-  console.log(
-    'thisi s WHO question',
-    questionnaires?.questionnaires?.[0]?.question_v2s,
-  );
-  console.log(
-    'thisi s WHO 322432question',
-    swiper?.current?.state?.firstCardIndex,
-  );
-
-  console.log(cardIdx, 'this is cardIndex-09080');
-
-
 
   useEffect(() => {
     // Define the animation configuration
