@@ -9,3 +9,11 @@ export const resultData = [{
     title: "You've reached 90%!",
     description: "Your WHO-5 raw score is 23. That means your wellbeing has been excellent the last two weeks."
 }];
+
+export const buttonData = {
+    lastTitle: 'BACK TO LAST TITLE',
+    chooseAnswer: 'Choose an answer',
+    back: 'BACK',
+    finished: 'FINISHED',
+    next: 'NEXT',
+}

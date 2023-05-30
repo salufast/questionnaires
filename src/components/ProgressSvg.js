@@ -1,5 +1,6 @@
 import React from 'react';
 import {VictoryPie} from 'victory-native';
+import colors from '../utils/colors';
 
 const SemiCircleProgressBar = ({percentage}) => {
     const data = [
@@ -16,7 +17,7 @@ const SemiCircleProgressBar = ({percentage}) => {
         style={{
           data: {
             fill: ({datum}) =>
-              datum.x === 'Progress' ? '#008888' : '#D3D3D3',
+              datum.x === 'Progress' ? colors.teal : colors.lightGray,
           },
         }}
         startAngle={-90}

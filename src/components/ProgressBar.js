@@ -20,7 +20,7 @@ const ProgressBar = ({data, cardIdx}) => {
           styles.progressBar,
           {
             backgroundColor:
-              item.index < cardIndex ? '#4CB5AB' : '#D3D3D3',
+              item.index < cardIndex ? colors?.greenCorrect : colors?.lightGray,
           },
         ]}
       />

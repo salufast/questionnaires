@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, TouchableOpacity, Animated, Easing} from 'react-native';
+import {View, Text, Animated, Easing} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
 import Card from './Options';
@@ -15,8 +15,6 @@ const QuestionnaireWHO5 = () => {
   const swiper = useRef();
   const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [animation] = useState(new Animated.Value(0));
-  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     getQuestionnaires({
@@ -29,32 +27,6 @@ const QuestionnaireWHO5 = () => {
       },
     });
   }, []);
-
-  useEffect(() => {
-    // Define the animation configuration
-    const animationConfig = {
-      toValue: 1,
-      duration: 1200,
-      useNativeDriver: false,
-    };
-
-    // Start the animation
-    setTimeout(() => {
-      Animated.timing(animation, animationConfig).start();
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 2000,
-        easing: Easing.in,
-        useNativeDriver: true,
-      }).start();
-    }, 200);
-  }, [fadeAnim]);
-
-  // Define the interpolated height based on the animation value
-  const interpolatedHeight = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['85%', '40%'], // Adjust the output range as needed
-  });
 
   return (
     <View style={styles.testContainer}>
@@ -83,9 +55,11 @@ const QuestionnaireWHO5 = () => {
               ref={swiper}
               disableLeftSwipe={true}
               disableTopSwipe={true}
+              swipeBackCard={true}
               disableBottomSwipe={true}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
               renderCard={card => {
+                setCardIdx(swiper?.current?.state?.firstCardIndex);
                 return (
                   <Card
                     item={card}
@@ -93,9 +67,6 @@ const QuestionnaireWHO5 = () => {
                     multiple={card?.allow_multiple_answers}
                   />
                 );
-              }}
-              onSwiped={cardIndex => {
-                setCardIdx(swiper?.current?.state?.firstCardIndex + 1);
               }}
               onSwipedAll={() => {
                 setShowResult(true);

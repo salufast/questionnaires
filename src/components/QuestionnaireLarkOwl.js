@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, Image, TouchableOpacity, Animated} from 'react-native';
+import {View, Text} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
 import {Owl} from '../utils/images';
@@ -16,7 +16,6 @@ const QuestionnaireLarkOwl = () => {
   const swiper = useRef();
   const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [animation] = useState(new Animated.Value(0));
 
   useEffect(() => {
     getQuestionnaires({
@@ -29,26 +28,6 @@ const QuestionnaireLarkOwl = () => {
       },
     });
   }, []);
-
-  useEffect(() => {
-    // Define the animation configuration
-    const animationConfig = {
-      toValue: 1,
-      duration: 400,
-      delay: 1000,
-      useNativeDriver: false,
-    };
-    // Start the animation
-    setTimeout(() => {
-      Animated.timing(animation, animationConfig).start();
-    }, 200);
-  }, [showResult]);
-
-  // Define the interpolated height based on the animation value
-  const interpolatedHeight = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['85%', '40%'], // Adjust the output range as needed
-  });
 
   return (
     <View style={styles.testContainer}>
@@ -83,10 +62,11 @@ const QuestionnaireLarkOwl = () => {
               disableTopSwipe={true}
               disableLeftSwipe={true}
               disableBottomSwipe={true}
+              swipeBackCard={true}
               swipeAnimationDuration={cardIdx === 4 ? 0 : 350}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={(card, index) => {
-                setCardIdx(index);
+              renderCard={(card) => {
+                setCardIdx(swiper?.current?.state?.firstCardIndex);
                 return (
                   <Card
                     item={card}
@@ -96,10 +76,9 @@ const QuestionnaireLarkOwl = () => {
                 );
               }}
               onSwipedAll={() => {
-                console.log('onSwipedAll');
                 setShowResult(true);
               }}
-              stackSize={5}></Swiper>
+              stackSize={5}/>
           </View>
         </>
       )}

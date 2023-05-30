@@ -9,16 +9,32 @@ import {Smiley} from '../utils/images';
 import ProgressBar from './ProgressBar';
 import {resultData} from '../utils/constant';
 import Result from './Result';
+import {GET_QUESTIONNAIRE_ANSWERS} from '../apollo/questionnaire_answer';
+import { useQuery } from '@apollo/client';
 
 const QuestionnaireFastingProtocol = ({route}) => {
   const {programDay} = route.params || {};
   const [getQuestionnaires, {data: questionnaire_data}] =
     useLazyQuery(GET_QUESTIONNAIRES);
+  const [getAnswers, {data: questionnaire_ans}] = useLazyQuery(
+    GET_QUESTIONNAIRE_ANSWERS,
+  );
   const [showResult, setShowResult] = useState(false);
   const [cardIdx, setCardIdx] = useState(false);
-  const [nowShow, setNowShow] = useState(true)
-    // programDay === 6 || programDay === 0 ? false : true,)
+  const [nowShow, setNowShow] = useState(false);
   const swiper = useRef(0);
+  const swiper1 = useRef(0);
+
+  const {data} = useQuery(GET_QUESTIONNAIRE_ANSWERS, {
+    variables: {
+      whereQuestionnaireAnswers: {
+        _or: [
+          {id: {_eq: "1"}},
+          
+        ],
+      },
+    },
+  });
 
   useEffect(() => {
     getQuestionnaires({
@@ -66,74 +82,82 @@ const QuestionnaireFastingProtocol = ({route}) => {
           image={Smiley}
         />
       ) : (
-        <View style={{backgroundColor: '#eee', flex: 1}}>
-          <View style={styles.cardNum}>
-            {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>
-                {cardIdx + 1} of {''}
-                {fastingProtocolQuestionnaire?.question_v2s?.length}
-              </Text>
-            ) : (
-              <></>
-            )}
-          </View>
-          <View style={styles.progressView}>
-            <ProgressBar
-              data={fastingProtocolQuestionnaire?.question_v2s}
-              cardIdx={cardIdx}
+        <View style={styles.questNum}>
+          {!nowShow && (
+            <View style={styles.cardNum}>
+              {cardIdx <= 4 ? (
+                <Text style={styles.regularFont}>
+                  {cardIdx + 1} of {''}
+                  {fastingProtocolQuestionnaire?.question_v2s?.length}
+                </Text>
+              ) : (
+                <></>
+              )}
+            </View>
+          )}
+          {!nowShow && (
+            <View style={styles.progressView}>
+              <ProgressBar
+                data={fastingProtocolQuestionnaire?.question_v2s}
+                cardIdx={cardIdx}
+              />
+            </View>
+          )}
+          <View style={styles.swiperView}>
+            <Swiper
+              showSecondCard={true}
+              ref={swiper}
+              swipeBackCard={true}
+              disableLeftSwipe={true}
+              disableTopSwipe={true}
+              disableBottomSwipe={true}
+              cards={fastingProtocolQuestionnaire?.question_v2s || []}
+              renderCard={card => {
+                setCardIdx(swiper?.current?.state?.firstCardIndex);
+                return (
+                  <Card
+                    item={card}
+                    ref={swiper}
+                    multiple={card?.allow_multiple_answers}
+                  />
+                );
+              }}
+              onSwipedAll={() => {
+                if (programDay === 0 || programDay === 6) {
+                  setNowShow(true);
+                  setShowResult(false);
+                } else setShowResult(true);
+              }}
+              stackSize={5}
             />
           </View>
-          {/* {programDay === 0 || programDay === 6 ? (
-          <View style={{bottom: '8%'}}>
-              <Swiper
-                showSecondCard={false}
-                ref={swiper}
-                disableLeftSwipe={true}
-                disableTopSwipe={true}
-                disableBottomSwipe={true}
-                cards={programDay === 0 ? fastingGoalsQuestionnaire?.question_v2s : programDay === 6 ? fastingGoalsReachedQuestionnaire?.question_v2s : []}
-                renderCard={(card, index) => {
-                  return (
-                    <Card
-                      item={card}
-                      ref={swiper}
-                      multiple={card?.allow_multiple_answers}
-                    />
-                  );
-                }}
-                onSwipedAll={() => {
-                  console.log('onSwipedAll');
-                  setNowShow(true);
-                }}
-                stackSize={5}
-              />
-          </View>
-            ): <></>}  */}
           {nowShow && (
-            <View style={styles.swiperView}>
+            <View>
               <Swiper
-                showSecondCard={true}
-                ref={swiper}
-                swipeBackCard={true}
+                ref={swiper1}
                 disableLeftSwipe={true}
                 disableTopSwipe={true}
+                swipeAnimationDuration={0}
                 disableBottomSwipe={true}
-                cards={fastingProtocolQuestionnaire?.question_v2s || []}
-                renderCard={(card, index) => {
-                  setCardIdx(index);
+                cards={
+                  programDay === 0
+                    ? fastingGoalsQuestionnaire?.question_v2s
+                    : programDay === 6
+                    ? fastingGoalsReachedQuestionnaire?.question_v2s
+                    : []
+                }
+                renderCard={card => {
                   return (
                     <Card
                       item={card}
-                      ref={swiper}
+                      ref={swiper1}
                       multiple={card?.allow_multiple_answers}
                     />
                   );
                 }}
                 onSwipedAll={() => {
-                  console.log('onSwipedAll');
                   setShowResult(true);
                 }}
-                stackSize={5}
               />
             </View>
           )}

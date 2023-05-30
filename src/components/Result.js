@@ -12,21 +12,19 @@ import {useNavigation} from '@react-navigation/native';
 import SaluText from '../saluComponents/SaluText';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SemiCircleProgressBar from './ProgressSvg';
+import { buttonData } from '../utils/constant';
 
 const Result = ({title, description, image = null}) => {
   const [animation] = useState(new Animated.Value(0));
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  console.log('image', image);
+
   useEffect(() => {
-    // Define the animation configuration
     const animationConfig = {
       toValue: 1,
       duration: 1200,
       useNativeDriver: false,
     };
-
-    // Start the animation
     setTimeout(() => {
       Animated.timing(animation, animationConfig).start();
       Animated.timing(fadeAnim, {
@@ -46,16 +44,8 @@ const Result = ({title, description, image = null}) => {
 
   return (
     <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowOffset: {width: 2, height: 4},
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        elevation: 5,
-      }}>
-      <Animated.View style={{opacity: fadeAnim, alignItems: 'center'}}>
+      style={styles.resultPage}>
+      <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
         {image === false ? (
           <View style={{height: '50%'}}>
             <SemiCircleProgressBar percentage={90} />
@@ -70,7 +60,7 @@ const Result = ({title, description, image = null}) => {
         )}
       </Animated.View>
       <Animated.View style={[styles.resultView, {height: interpolatedHeight}]}>
-        <Animated.View style={{opacity: fadeAnim, alignItems: 'center'}}>
+        <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
           <SaluTitle>{title}</SaluTitle>
           <SaluText style={styles.resultText}>{description}</SaluText>
         </Animated.View>
@@ -78,10 +68,10 @@ const Result = ({title, description, image = null}) => {
           onPress={() => {
             navigation.navigate('questionnaires');
           }}
-          style={[styles.resultButton]}>
-          <Animated.View style={{opacity: fadeAnim, alignItems: 'center'}}>
+          style={styles.resultButton}>
+          <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
             <SaluTitle style={styles.resultButtonText}>
-              BACK TO LAST TITLE
+            {buttonData?.lastTitle}
             </SaluTitle>
           </Animated.View>
         </TouchableOpacity>
