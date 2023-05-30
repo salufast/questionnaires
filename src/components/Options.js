@@ -1,16 +1,18 @@
 import {Text, View, TouchableOpacity, Image, Animated} from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
 import styles from './styles';
-import {Checkmark, Radio} from '../utils/images';
+import {Checkbox, Checkmark, Radio} from '../utils/images';
+import {buttonData} from '../utils/constant';
+import colors from '../utils/colors';
 
-const Card = React.forwardRef(({item}, swiper) => {
+const Card = React.forwardRef(({item, multiple}, swiper) => {
+  const scaleValue = useRef(new Animated.Value(1)).current;
   const [selectedOption, setSelectedOption] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
-  const scaleValue = useRef(new Animated.Value(1)).current;
-  const backgroundColorValue = useRef(new Animated.Value(0)).current;
-  const [viewHeight] = useState(new Animated.Value(200)); // Initial height of the view
+  const [multiSelect, setMultiSelect] = useState([]);
+
   const handleSelectOption = option => {
     setSelectedOption(option);
   };
@@ -19,16 +21,12 @@ const Card = React.forwardRef(({item}, swiper) => {
   };
 
   const handleButtonClick = () => {
-    // Shrink animation
     Animated.timing(scaleValue, {
       toValue: 0.5,
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      // Toggle checked state
       setIsChecked(!isChecked);
-
-      // Restore original size animation
       Animated.timing(scaleValue, {
         toValue: 1,
         duration: 200,
@@ -37,63 +35,90 @@ const Card = React.forwardRef(({item}, swiper) => {
     });
   };
 
+  const handleOptionSelection = option => {
+    if (multiSelect?.includes(option)) {
+      setMultiSelect(multiSelect?.filter(item => item !== option));
+    } else {
+      setMultiSelect(prevState => [...prevState, option]);
+    }
+  };
 
   return (
     <View style={styles.card}>
-      <SaluText style={{color: '#808080'}}>Choose an answer</SaluText>
-      <SaluTitle>{item?.title}</SaluTitle>
-      <View style={styles.questOpt}>
-        {item?.answer_v2s.map((item, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.7}
-              onPress={() => {
-                handleSelectOption(index);
-                handleButtonClick();
-              }}
-              style={[
-                styles.options,
-                {
-                  backgroundColor: isCorrectOption(item)
-                    ? '#4CB5AB'
-                    : '#FAFAFA',
-                },
-              ]}>
-              <Animated.View
+      <View>
+        <SaluText style={{color: colors.grey}}>
+          {buttonData.chooseAnswer}
+        </SaluText>
+        <SaluTitle>{item?.title}</SaluTitle>
+        <View style={styles.questOpt}>
+          {item?.answer_v2s.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                activeOpacity={0.7}
                 style={[
+                  styles.options,
                   {
-                    transform: [
-                      {scale: isCorrectOption(item) ? scaleValue : 0.75},
-                    ],
+                    backgroundColor: isCorrectOption(item)
+                      ? colors.greenCorrect
+                      : colors.grey98,
                   },
-                ]}>
-                <Image source={Radio} />
-                {isCorrectOption(item) && (
-                  <Image
-                    source={Checkmark}
-                    style={{position: 'absolute', top: '10%', left: '18%'}}
-                  />
-                )}
-              </Animated.View>
-              <SaluText style={styles.padSpace}>{item?.text}</SaluText>
-            </TouchableOpacity>
-          );
-        })}
+                  multiSelect.includes(index) && {
+                    backgroundColor: colors.greenCorrect,
+                  },
+                ]}
+                onPress={() => {
+                  multiple
+                    ? handleOptionSelection(index)
+                    : handleSelectOption(index);
+                  handleButtonClick();
+                }}>
+                <Animated.View
+                  style={[
+                    {
+                      transform: [
+                        {scale: isCorrectOption(item) ? scaleValue : 0.75},
+                      ],
+                    },
+                  ]}>
+                  <Image source={multiple ? Checkbox : Radio} />
+                  {isCorrectOption(item) && (
+                    <Image source={Checkmark} style={styles.checkMark} />
+                  )}
+                  {multiSelect.includes(index) && (
+                    <Image source={Checkmark} style={styles.checkMark} />
+                  )}
+                </Animated.View>
+                <SaluText
+                  style={[
+                    styles.padSpace,
+                    isCorrectOption(item) && {color: colors.white},
+                  ]}>
+                  {item?.text}
+                </SaluText>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
       <View style={styles.mainButton}>
         <TouchableOpacity
           style={styles.m_button}
           onPress={() => swiper.current.swipeBack()}>
-          <Text style={styles.backText}>BACK</Text>
+          <Text style={[styles.backText, {opacity: item?.index < 1 ? 0 : 1}]}>
+            {buttonData?.back}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => swiper.current.swipeLeft()}
-          style={[
-            styles.m_button,
-            {backgroundColor: '#008888', borderRadius: 10},
-          ]}>
-          <Text style={[styles.backText, {color: 'white'}]}>NEXT</Text>
+          onPress={() => {
+            swiper.current.swipeLeft();
+          }}
+          style={[styles.m_button, {backgroundColor: colors.teal}]}>
+          <Text style={[styles.backText, {color: colors.white}]}>
+            {swiper?.current?.state?.firstCardIndex === 4
+              ? buttonData?.finished
+              : buttonData?.next}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

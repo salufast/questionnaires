@@ -20,7 +20,6 @@ export const QUESTIONNAIRE_ANSWER_FRAGMENT = gql`
       }
     }
   }
-  ${QUESTION_ANSWER_FRAGMENT}
 `;
 
 export const GET_QUESTIONNAIRE_ANSWERS = gql`
