@@ -10,15 +10,18 @@ import colors from '../utils/colors';
 const Card = React.forwardRef(({item, multiple}, swiper) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
   const [selectedOption, setSelectedOption] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
   const [multiSelect, setMultiSelect] = useState([]);
 
   const handleSelectOption = option => {
     setSelectedOption(option);
   };
   const isCorrectOption = option => {
-    return selectedOption === option.index;
+    return selectedOption === option.id;
   };
+
+  useEffect(() => {
+    if (selectedOption) handleButtonClick();
+  }, [selectedOption])
 
   const handleButtonClick = () => {
     Animated.timing(scaleValue, {
@@ -26,7 +29,6 @@ const Card = React.forwardRef(({item, multiple}, swiper) => {
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      setIsChecked(!isChecked);
       Animated.timing(scaleValue, {
         toValue: 1,
         duration: 200,
@@ -47,7 +49,7 @@ const Card = React.forwardRef(({item, multiple}, swiper) => {
     <View style={styles.card}>
       <View>
         <SaluText style={{color: colors.grey}}>
-          {buttonData.chooseAnswer}
+          {buttonData?.chooseAnswer}
         </SaluText>
         <SaluTitle>{item?.title}</SaluTitle>
         <View style={styles.questOpt}>
@@ -70,8 +72,7 @@ const Card = React.forwardRef(({item, multiple}, swiper) => {
                 onPress={() => {
                   multiple
                     ? handleOptionSelection(index)
-                    : handleSelectOption(index);
-                  handleButtonClick();
+                    : handleSelectOption(item.id);
                 }}>
                 <Animated.View
                   style={[
@@ -105,13 +106,13 @@ const Card = React.forwardRef(({item, multiple}, swiper) => {
         <TouchableOpacity
           style={styles.m_button}
           onPress={() => swiper.current.swipeBack()}>
-          <Text style={[styles.backText, {opacity: item?.index < 1 ? 0 : 1}]}>
+          <Text style={[styles.backText, {opacity: swiper?.current?.state?.firstCardIndex < 1 ? 0 : 1}]}>
             {buttonData?.back}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            swiper.current.swipeLeft();
+            swiper?.current?.swipeLeft();
           }}
           style={[styles.m_button, {backgroundColor: colors.teal}]}>
           <Text style={[styles.backText, {color: colors.white}]}>
