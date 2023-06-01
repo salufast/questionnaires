@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -89,6 +89,7 @@ export default StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: hp(3),
     padding: wp(6),
+    paddingVertical: hp(6),
   },
   resultText: {textAlign: 'center', marginVertical: hp(1)},
   resultButton: {
@@ -98,7 +99,7 @@ export default StyleSheet.create({
     height: hp(7),
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: hp(1),
+    marginTop: hp(2),
   },
   resultButtonText: {fontSize: 16, color: colors.white},
   cardNum: {marginTop: hp(1.5), alignItems: 'center'},
@@ -112,13 +113,13 @@ export default StyleSheet.create({
   },
   midVal: {
     alignSelf: 'center',
-    bottom: hp(37),
+    bottom: Platform.OS === 'ios' ? hp(37) : hp(31),
     fontSize: hp(7),
     color: colors.teal,
   },
   graphVal: {
     alignSelf: 'flex-end',
-    bottom: hp(37),
+    bottom: Platform.OS === 'ios' ? hp(37) : hp(31),
     fontSize: hp(4),
     color: colors.grey,
   },
@@ -126,7 +127,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: wp(82),
+    width: wp(85),
     marginHorizontal: wp(13.5),
   },
   questNum: {backgroundColor: colors.whiteSmoke, flex: 1},
@@ -140,5 +141,12 @@ export default StyleSheet.create({
     elevation: 5,
   },
   itemCenter: {alignItems: 'center'},
-  checkMark: {position: 'absolute', top: hp(0.75), left: wp(1)},
+  itemCenter1: {alignItems: 'center'},
+  checkMark: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? hp(0.75) : hp(0.5),
+    left: wp(0.8),
+  },
+  semiCircle: {height: hp(40), alignItems: 'center'},
+  resultPic: {height: hp(35), alignItems: 'center', marginVertical: hp(1)},
 });

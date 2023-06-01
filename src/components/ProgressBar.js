@@ -12,7 +12,7 @@ const ProgressBar = ({data, cardIdx}) => {
     }
   })
 
-  return data?.map((item) => {
+  return data?.map((item, index) => {
     return (
       <View
         key={item.index}
@@ -20,7 +20,7 @@ const ProgressBar = ({data, cardIdx}) => {
           styles.progressBar,
           {
             backgroundColor:
-              item.index < cardIndex ? colors?.greenCorrect : colors?.lightGray,
+              index < cardIndex ? colors?.greenCorrect : colors?.lightGray,
           },
         ]}
       />

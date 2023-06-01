@@ -13,6 +13,7 @@ import SaluText from '../saluComponents/SaluText';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SemiCircleProgressBar from './ProgressSvg';
 import { buttonData } from '../utils/constant';
+import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 const Result = ({title, description, image = null}) => {
   const [animation] = useState(new Animated.Value(0));
@@ -39,15 +40,15 @@ const Result = ({title, description, image = null}) => {
   // Define the interpolated height based on the animation value
   const interpolatedHeight = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['85%', '40%'], // Adjust the output range as needed
+    outputRange: ['70%', '40%'], // Adjust the output range as needed
   });
 
   return (
     <View
       style={styles.resultPage}>
-      <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
+      <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter1]}>
         {image === false ? (
-          <View style={{height: '50%'}}>
+          <View style={styles.semiCircle}>
             <SemiCircleProgressBar percentage={90} />
             <Text style={styles.midVal}>23</Text>
             <View style={styles.graphValView}>
@@ -56,7 +57,7 @@ const Result = ({title, description, image = null}) => {
             </View>
           </View>
         ) : (
-          <Image source={image} />
+          <Image source={image} resizeMode='contain' style={styles.resultPic} />
         )}
       </Animated.View>
       <Animated.View style={[styles.resultView, {height: interpolatedHeight}]}>

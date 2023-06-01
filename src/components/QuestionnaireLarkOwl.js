@@ -58,7 +58,7 @@ const QuestionnaireLarkOwl = () => {
           <View style={styles.swiperView}>
             <Swiper
               ref={swiper}
-              showSecondCard={false}
+              showSecondCard={true}
               disableTopSwipe={true}
               disableLeftSwipe={true}
               disableBottomSwipe={true}
