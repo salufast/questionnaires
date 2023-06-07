@@ -1,12 +1,12 @@
 export const resultData = [{
-  title: 'You are an Owl!',
+  title: 'You are an ',
   description:
     ' Skip breakfast and make lunch your largest meal of the day. Your last meal of the day should be at least 3 hours before going to bed.',
 }, {
-    title: "You are in high Spirits!",
+    title: "You are in ",
     description: 'Congratulations! Your mood today is excellent. This could be the effect of the known effect called “fasting high” by experts. Keep it up.'
 }, {
-    title: "You've reached 90%!",
+    title: "You've reached ",
     description: "Your WHO-5 raw score is 23. That means your wellbeing has been excellent the last two weeks."
 }];
 
@@ -16,4 +16,5 @@ export const buttonData = {
     back: 'BACK',
     finished: 'FINISHED',
     next: 'NEXT',
+    lastTitle_small: 'Last Title'
 }

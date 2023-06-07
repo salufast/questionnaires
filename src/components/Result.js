@@ -12,12 +12,17 @@ import {useNavigation} from '@react-navigation/native';
 import SaluText from '../saluComponents/SaluText';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SemiCircleProgressBar from './ProgressSvg';
-import { buttonData } from '../utils/constant';
-import { heightPercentageToDP as hp, widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import {buttonData} from '../utils/constant';
+import colors from '../utils/colors';
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp,
+} from 'react-native-responsive-screen';
 
-const Result = ({title, description, image = null}) => {
+const Result = ({title, description, image = null, type}) => {
   const [animation] = useState(new Animated.Value(0));
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const result = ['Owl', '92%', 'high Spirits'];
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -40,12 +45,11 @@ const Result = ({title, description, image = null}) => {
   // Define the interpolated height based on the animation value
   const interpolatedHeight = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['70%', '40%'], // Adjust the output range as needed
+    outputRange: [hp(70), hp(35)], // Adjust the output range as needed
   });
 
   return (
-    <View
-      style={styles.resultPage}>
+    <View style={styles.resultPage}>
       <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter1]}>
         {image === false ? (
           <View style={styles.semiCircle}>
@@ -57,12 +61,15 @@ const Result = ({title, description, image = null}) => {
             </View>
           </View>
         ) : (
-          <Image source={image} resizeMode='contain' style={styles.resultPic} />
+          <Image source={image} resizeMode="contain" style={styles.resultPic} />
         )}
       </Animated.View>
       <Animated.View style={[styles.resultView, {height: interpolatedHeight}]}>
         <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
-          <SaluTitle>{title}</SaluTitle>
+          <SaluTitle>
+            {title}
+            {<Text style={{color: colors.greenCorrect}}>{result[type]}</Text>}!
+          </SaluTitle>
           <SaluText style={styles.resultText}>{description}</SaluText>
         </Animated.View>
         <TouchableOpacity
@@ -71,9 +78,9 @@ const Result = ({title, description, image = null}) => {
           }}
           style={styles.resultButton}>
           <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
-            <SaluTitle style={styles.resultButtonText}>
-            {buttonData?.lastTitle}
-            </SaluTitle>
+            <SaluText style={styles.resultButtonText}>
+              {buttonData?.lastTitle}
+            </SaluText>
           </Animated.View>
         </TouchableOpacity>
       </Animated.View>

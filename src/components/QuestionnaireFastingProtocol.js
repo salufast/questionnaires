@@ -1,18 +1,18 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity, Image,  } from 'react-native';
 import styles from './styles';
 import Card from './Options';
 import Swiper from 'react-native-deck-swiper';
-import {Smiley} from '../utils/images';
+import {Smiley, Back} from '../utils/images';
 import ProgressBar from './ProgressBar';
-import {resultData} from '../utils/constant';
+import {buttonData, resultData} from '../utils/constant';
 import Result from './Result';
 import {GET_QUESTIONNAIRE_ANSWERS} from '../apollo/questionnaire_answer';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 
-const QuestionnaireFastingProtocol = ({route}) => {
+const QuestionnaireFastingProtocol = ({route, navigation}) => {
   const {programDay} = route.params || {};
   const [getQuestionnaires, {data: questionnaire_data}] =
     useLazyQuery(GET_QUESTIONNAIRES);
@@ -28,10 +28,7 @@ const QuestionnaireFastingProtocol = ({route}) => {
   const {data} = useQuery(GET_QUESTIONNAIRE_ANSWERS, {
     variables: {
       whereQuestionnaireAnswers: {
-        _or: [
-          {id: {_eq: "1"}},
-          
-        ],
+        _or: [{id: {_eq: '1'}}],
       },
     },
   });
@@ -80,11 +77,20 @@ const QuestionnaireFastingProtocol = ({route}) => {
           title={resultData[1]?.title}
           description={resultData[1]?.description}
           image={Smiley}
+          type={2}
         />
       ) : (
         <View style={styles.questNum}>
           {!nowShow && (
             <View style={styles.cardNum}>
+              <TouchableOpacity
+                style={styles.lastTitle}
+                onPress={() => navigation.goBack()}>
+                <Image source={Back} />
+                <Text style={styles.titleText}>
+                  {'  '}{buttonData.lastTitle_small}
+                </Text>
+              </TouchableOpacity>
               {cardIdx <= 4 ? (
                 <Text style={styles.regularFont}>
                   {cardIdx + 1} of {''}
@@ -107,6 +113,7 @@ const QuestionnaireFastingProtocol = ({route}) => {
             <Swiper
               showSecondCard={true}
               ref={swiper}
+              stackSeparation={20}
               swipeBackCard={true}
               disableLeftSwipe={true}
               disableTopSwipe={true}

@@ -1,13 +1,15 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, Animated, Easing} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
 import Card from './Options';
 import ProgressBar from './ProgressBar';
-import { resultData } from '../utils/constant';
+import {buttonData, resultData} from '../utils/constant';
 import Result from './Result';
+import {useNavigation} from '@react-navigation/native';
+import {Back} from '../utils/images';
 
 const QuestionnaireWHO5 = () => {
   const [getQuestionnaires, {data: questionnaires}] =
@@ -15,6 +17,7 @@ const QuestionnaireWHO5 = () => {
   const swiper = useRef();
   const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     getQuestionnaires({
@@ -31,10 +34,23 @@ const QuestionnaireWHO5 = () => {
   return (
     <View style={styles.testContainer}>
       {showResult ? (
-        <Result title={resultData[2].title} description={resultData[2].description} image={false} />
+        <Result
+          title={resultData[2].title}
+          description={resultData[2].description}
+          image={false}
+          type={1}
+        />
       ) : (
         <>
           <View style={styles.cardNum}>
+            <TouchableOpacity
+              style={styles.lastTitle}
+              onPress={() => navigation.goBack()}>
+              <Image source={Back} />
+              <Text style={{color: '#4CB5AB', fontSize: 17}}>
+                {'  '}{buttonData.lastTitle_small}
+              </Text>
+            </TouchableOpacity>
             {cardIdx <= 4 ? (
               <Text style={styles.regularFont}>
                 {cardIdx + 1} of {''}
@@ -45,7 +61,7 @@ const QuestionnaireWHO5 = () => {
             )}
           </View>
           <View style={styles.progressView}>
-          <ProgressBar
+            <ProgressBar
               data={questionnaires?.questionnaires?.[0]?.question_v2s}
               cardIdx={cardIdx}
             />
@@ -53,10 +69,12 @@ const QuestionnaireWHO5 = () => {
           <View style={styles.swiperView}>
             <Swiper
               ref={swiper}
+              stackSeparation={20}
               disableLeftSwipe={true}
               disableTopSwipe={true}
               swipeBackCard={true}
               disableBottomSwipe={true}
+              swipeAnimationDuration={cardIdx === 4 ? 0 : 350}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
               renderCard={card => {
                 setCardIdx(swiper?.current?.state?.firstCardIndex);
@@ -71,7 +89,7 @@ const QuestionnaireWHO5 = () => {
               onSwipedAll={() => {
                 setShowResult(true);
               }}
-              stackSize={5}
+              stackSize={3}
             />
           </View>
         </>

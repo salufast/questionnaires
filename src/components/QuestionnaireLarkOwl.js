@@ -1,14 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLazyQuery} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './styles';
 import Swiper from 'react-native-deck-swiper';
-import {Owl} from '../utils/images';
+import {Back, Owl} from '../utils/images';
 import Card from './Options';
 import ProgressBar from './ProgressBar';
 import Result from './Result';
-import {resultData} from '../utils/constant';
+import {buttonData, resultData} from '../utils/constant';
+import { useNavigation } from '@react-navigation/native';
 
 const QuestionnaireLarkOwl = () => {
   const [getQuestionnaires, {data: questionnaires}] =
@@ -16,6 +17,7 @@ const QuestionnaireLarkOwl = () => {
   const swiper = useRef();
   const [cardIdx, setCardIdx] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     getQuestionnaires({
@@ -36,10 +38,17 @@ const QuestionnaireLarkOwl = () => {
           title={resultData[0]?.title}
           description={resultData[0]?.description}
           image={Owl}
+          type={0}
         />
       ) : (
         <>
           <View style={styles.cardNum}>
+            <TouchableOpacity
+              style={styles.lastTitle}
+              onPress={() => navigation.goBack()}>
+              <Image source={Back} />
+              <Text style={styles.titleText}>{"  "}{buttonData.lastTitle_small}</Text>
+            </TouchableOpacity>
             {cardIdx <= 4 ? (
               <Text style={styles.regularFont}>
                 {cardIdx + 1} of {''}
@@ -58,6 +67,7 @@ const QuestionnaireLarkOwl = () => {
           <View style={styles.swiperView}>
             <Swiper
               ref={swiper}
+              stackSeparation={20}
               showSecondCard={true}
               disableTopSwipe={true}
               disableLeftSwipe={true}
@@ -65,20 +75,22 @@ const QuestionnaireLarkOwl = () => {
               swipeBackCard={true}
               swipeAnimationDuration={cardIdx === 4 ? 0 : 350}
               cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={(card) => {
+              renderCard={card => {
                 setCardIdx(swiper?.current?.state?.firstCardIndex);
                 return (
                   <Card
                     item={card}
                     ref={swiper}
                     multiple={card?.allow_multiple_answers}
+                    // quest_id={questionnaires?.questionnaires?.[0]?.id}
                   />
                 );
               }}
               onSwipedAll={() => {
                 setShowResult(true);
               }}
-              stackSize={5}/>
+              stackSize={3}
+            />
           </View>
         </>
       )}
