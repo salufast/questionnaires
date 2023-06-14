@@ -1,11 +1,4 @@
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  Animated,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, View, TouchableOpacity, Image, Animated} from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
@@ -106,115 +99,104 @@ const Card = React.forwardRef(
 
     return (
       <View style={styles.card}>
-        {item === 'undefined' ? (
-          <ActivityIndicator size="large" color={'red'}/>
-        ) : (
-          <>
-            <View>
-              <SaluText style={styles.chooseAns}>
-                {buttonData?.chooseAnswer}
-              </SaluText>
-              <SaluTitle style={{height: hp(12)}}>{item?.title}</SaluTitle>
-              <View style={styles.questOpt}>
-                {item?.answer_v2s.map((item, index) => {
-                  const optionSelected = isCorrectOption(item);
-                  return (
-                    <TouchableOpacity
-                      disabled={disabled}
-                      key={index}
-                      activeOpacity={0.7}
-                      style={[
-                        styles.options,
-                        {
-                          backgroundColor: optionSelected
-                            ? colors.greenCorrect
-                            : colors.grey98,
-                        },
-                      ]}
-                      onPress={() => {
-                        setResponse(item);
-                        multiple
-                          ? handleOptionSelection(item.id)
-                          : handleSelectOption(item.id);
-                      }}>
-                      <Animated.View
-                        style={[
-                          {
-                            transform: [
-                              {scale: optionSelected ? scaleValue : 0.75},
-                            ],
-                          },
-                        ]}>
-                        <Image source={multiple ? Checkbox : Radio} />
-                        {optionSelected && (
-                          <Image source={Checkmark} style={styles.checkMark} />
-                        )}
-                        {multiSelect.includes(item.id) && (
-                          <Image source={Checkmark} style={styles.checkMark} />
-                        )}
-                      </Animated.View>
-                      <SaluText
-                        style={[
-                          styles.padSpace,
-                          optionSelected && {color: colors.white},
-                        ]}>
-                        {item?.text}
-                      </SaluText>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-            <View style={styles.mainButton}>
-              <TouchableOpacity
-                style={styles.m_button_back}
-                onPress={() => {
-                  swiper.current.swipeBack();
-                  onBack();
-                }}>
-                <Text
+        <View>
+          <SaluText style={styles.chooseAns}>
+            {buttonData?.chooseAnswer}
+          </SaluText>
+          <SaluTitle style={{height: hp(14.8)}}>{item?.title}</SaluTitle>
+          <View style={styles.questOpt}>
+            {item?.answer_v2s.map((item, index) => {
+              const optionSelected = isCorrectOption(item);
+              return (
+                <TouchableOpacity
+                  disabled={disabled}
+                  key={index}
+                  activeOpacity={0.7}
                   style={[
-                    styles.backText,
+                    styles.options,
                     {
-                      opacity:
-                        swiper?.current?.state?.firstCardIndex < 1 ? 0 : 1,
+                      backgroundColor: optionSelected
+                        ? colors.greenCorrect
+                        : colors.grey98,
                     },
-                  ]}>
-                  {buttonData?.back}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  if (response || disabled) {
-                    swiper?.current?.swipeLeft();
-                  }
-                  if (response) {
-                    onNext();
-                    const questionnaireAnswerValues = {
-                      question_answer_v2s: {
-                        data: [
-                          {
-                            answer_text: response?.text,
-                            answer_v2_id: response?.id,
-                            question_v2_id: item?.id,
-                          },
+                  ]}
+                  onPress={() => {
+                    setResponse(item);
+                    multiple
+                      ? handleOptionSelection(item.id)
+                      : handleSelectOption(item.id);
+                  }}>
+                  <Animated.View
+                    style={[
+                      {
+                        transform: [
+                          {scale: optionSelected ? scaleValue : 0.75},
                         ],
                       },
-                      questionnaire_id: id,
-                    };
-                    caching(questionnaireAnswerValues, response, item);
-                  }
-                }}
-                style={[styles.m_button, {backgroundColor: colors.teal}]}>
-                <Text style={styles.finishedText}>
-                  {swiper?.current?.state?.firstCardIndex === 4
-                    ? buttonData?.finished
-                    : buttonData?.next}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
+                    ]}>
+                    <Image source={multiple ? Checkbox : Radio} />
+                    {optionSelected && (
+                      <Image source={Checkmark} style={styles.checkMark} />
+                    )}
+                    {multiSelect.includes(item.id) && (
+                      <Image source={Checkmark} style={styles.checkMark} />
+                    )}
+                  </Animated.View>
+                  <SaluText
+                    style={[
+                      styles.padSpace,
+                      optionSelected && {color: colors.white},
+                    ]}>
+                    {item?.text}
+                  </SaluText>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+        <View style={styles.mainButton}>
+          <TouchableOpacity
+            disabled={swiper?.current?.state?.firstCardIndex === 0}
+            style={styles.m_button_back}
+            onPress={() => {
+              swiper.current.swipeBack();
+              onBack();
+            }}>
+            <Text
+              style={[
+                styles.backText,
+                {
+                  opacity: swiper?.current?.state?.firstCardIndex < 1 ? 0 : 1,
+                },
+              ]}>
+              {buttonData?.back}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (response || disabled) {
+                swiper?.current?.swipeLeft();
+              }
+              if (response) {
+                onNext();
+                const questionnaireAnswerValues = {
+                  question_answer_v2s: {
+                    data: [
+                      {
+                        answer_text: response?.text,
+                        answer_v2_id: response?.id,
+                        question_v2_id: item?.id,
+                      },
+                    ],
+                  },
+                  questionnaire_id: id,
+                };
+                caching(questionnaireAnswerValues, response, item);
+              }
+            }}>
+            <NextButtonn />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   },

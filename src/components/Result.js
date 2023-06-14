@@ -53,7 +53,7 @@ const Result = ({title, description, image = null, type}) => {
       <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter1]}>
         {image === false ? (
           <View style={styles.semiCircle}>
-            {/* <SemiCircleProgressBar percentage={90} /> */}
+            <SemiCircleProgressBar percentage={90} />
             <Text style={styles.midVal}>23</Text>
             <View style={styles.graphValView}>
               <Text style={styles.graphVal}>0</Text>

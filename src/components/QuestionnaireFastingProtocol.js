@@ -11,10 +11,11 @@ import {buttonData, resultData} from '../utils/constant';
 import Result from './Result';
 import {INSERT_QUESTIONNAIRE_ANSWER} from '../apollo/questionnaire_answer';
 import {useNavigation} from '@react-navigation/native';
+import {Loader} from './Loader';
 
 const QuestionnaireFastingProtocol = ({route}) => {
   const {programDay} = route.params || {};
-  const [getQuestionnaires, {data: questionnaire_data}] =
+  const [getQuestionnaires, {data: questionnaire_data, loading}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const [insert_questionnaire_answer_one] = useMutation(
     INSERT_QUESTIONNAIRE_ANSWER,
@@ -131,6 +132,10 @@ const QuestionnaireFastingProtocol = ({route}) => {
     });
   };
 
+  const keyExtractor = (item, index) => {
+    return `${item?.id}-${index}`;
+  };
+
   return (
     <View style={styles.testContainer}>
       {showResult ? (
@@ -153,7 +158,7 @@ const QuestionnaireFastingProtocol = ({route}) => {
                   {buttonData.lastTitle_small}
                 </Text>
               </TouchableOpacity>
-              {cardIdx <= 4 ? (
+              {cardIdx <= 2 ? (
                 <Text style={styles.regularFont}>
                   {cardIdx + 1} of {''}
                   {fastingProtocolQuestionnaire?.question_v2s?.length}
@@ -239,11 +244,13 @@ const QuestionnaireFastingProtocol = ({route}) => {
                 onSwipedAll={() => {
                   setShowResult(true);
                 }}
+                keyExtractor={keyExtractor}
               />
             </View>
           )}
         </View>
       )}
+      <Loader show={loading} />
     </View>
   );
 };

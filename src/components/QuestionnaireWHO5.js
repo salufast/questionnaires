@@ -11,9 +11,10 @@ import {buttonData, resultData} from '../utils/constant';
 import Result from './Result';
 import {useNavigation} from '@react-navigation/native';
 import {Back} from '../utils/images';
+import {Loader} from './Loader';
 
 const QuestionnaireWHO5 = () => {
-  const [getQuestionnaires, {data: questionnaires}] =
+  const [getQuestionnaires, {data: questionnaires, loading}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const [insert_questionnaire_answer_one] = useMutation(
     INSERT_QUESTIONNAIRE_ANSWER,
@@ -69,15 +70,6 @@ const QuestionnaireWHO5 = () => {
       optimisticResponse,
       update: async (cache, {data: {insert_questionnaire_answer_one}}) => {
         const cacheId = cache.identify(insert_questionnaire_answer_one);
-        if (insert_questionnaire_answer_one.id !== '2938283-2938473') {
-          const obj = {
-            typeId: questionnaires?.questionnaires?.[0].id,
-            id: item.id,
-            answerId: response.id,
-            questionId: questionnaireAnswerValues.questionnaire_id,
-            questionnaire_id: insert_questionnaire_answer_one.id,
-          };
-        }
         const questionAnswerV2Id = cache.identify(
           insert_questionnaire_answer_one.question_answer_v2s[0],
         );
@@ -103,6 +95,10 @@ const QuestionnaireWHO5 = () => {
   };
   const onBack = () => {
     setCardIdx(prev => prev - 1);
+  };
+
+  const keyExtractor = (item, index) => {
+    return `${item?.id}-${index}`;
   };
 
   return (
@@ -168,10 +164,12 @@ const QuestionnaireWHO5 = () => {
                 setShowResult(true);
               }}
               stackSize={3}
+              keyExtractor={keyExtractor}
             />
           </View>
         </>
       )}
+      <Loader show={loading} />
     </View>
   );
 };

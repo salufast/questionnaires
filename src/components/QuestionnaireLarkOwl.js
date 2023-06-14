@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState, useMemo} from 'react';
-import {useLazyQuery, useMutation, useApolloClient} from '@apollo/client';
+import React, {useEffect, useRef, useState} from 'react';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
 import {INSERT_QUESTIONNAIRE_ANSWER} from '../apollo/questionnaire_answer';
 import {View, Text, TouchableOpacity, Image, Alert} from 'react-native';
@@ -12,9 +12,10 @@ import Result from './Result';
 import {buttonData, resultData} from '../utils/constant';
 import {useNavigation} from '@react-navigation/native';
 import SaluText from '../saluComponents/SaluText';
+import {Loader} from './Loader';
 
 const QuestionnaireLarkOwl = () => {
-  const [getQuestionnaires, {data: questionnaires}] =
+  const [getQuestionnaires, {data: questionnaires, loading}] =
     useLazyQuery(GET_QUESTIONNAIRES);
   const [insert_questionnaire_answer_one] = useMutation(
     INSERT_QUESTIONNAIRE_ANSWER,
@@ -77,15 +78,6 @@ const QuestionnaireLarkOwl = () => {
       optimisticResponse,
       update: async (cache, {data: {insert_questionnaire_answer_one}}) => {
         const cacheId = cache.identify(insert_questionnaire_answer_one);
-        if (insert_questionnaire_answer_one.id !== '2938283-2938473') {
-          const obj = {
-            typeId: questionnaires?.questionnaires?.[0].id,
-            id: item.id,
-            answerId: response.id,
-            questionId: questionnaireAnswerValues.questionnaire_id,
-            questionnaire_id: insert_questionnaire_answer_one.id,
-          };
-        }
         const questionAnswerV2Id = cache.identify(
           insert_questionnaire_answer_one.question_answer_v2s[0],
         );
@@ -106,6 +98,10 @@ const QuestionnaireLarkOwl = () => {
     });
   };
 
+  const keyExtractor = (item, index) => {
+    return `${item?.id}-${index}`;
+  };
+
   return (
     <View style={styles.testContainer}>
       {showResult ? (
@@ -116,66 +112,72 @@ const QuestionnaireLarkOwl = () => {
           type={0}
         />
       ) : (
-        <>
-          <View style={styles.cardNum}>
-            <TouchableOpacity
-              style={styles.lastTitle}
-              onPress={() => {
-                navigation.goBack();
-              }}>
-              <Image source={Back} />
-              <SaluText style={styles.titleText}>
-                {buttonData.lastTitle_small}
-              </SaluText>
-            </TouchableOpacity>
-            {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>
-                {cardIdx + 1} of {''}
-                {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
-              </Text>
-            ) : (
-              <></>
-            )}
-          </View>
-          <View style={styles.progressView}>
-            <ProgressBar
-              data={questionnaires?.questionnaires?.[0]?.question_v2s}
-              cardIdx={cardIdx}
-            />
-          </View>
-          <View style={styles.swiperView}>
-            <Swiper
-              ref={swiper}
-              stackSeparation={20}
-              showSecondCard={true}
-              horizontalSwipe={false}
-              verticalSwipe={false}
-              swipeBackCard={true}
-              swipeAnimationDuration={cardIdx === 4 ? 0 : 350}
-              cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
-              renderCard={card => {
-                return (
-                  <Card
-                    item={card}
-                    ref={swiper}
-                    multiple={card?.allow_multiple_answers}
-                    __typename={questionnaires?.questionnaires?.[0].__typename}
-                    id={questionnaires?.questionnaires?.[0]?.id}
-                    {...{onNext}}
-                    {...{onBack}}
-                    {...{cardIdx}}
-                    {...{caching}}
-                  />
-                );
-              }}
-              onSwipedAll={() => {
-                setShowResult(true);
-              }}
-              stackSize={3}
-            />
-          </View>
-        </>
+        <View>
+          <>
+            <View style={styles.cardNum}>
+              <TouchableOpacity
+                style={styles.lastTitle}
+                onPress={() => {
+                  navigation.goBack();
+                }}>
+                <Image source={Back} />
+                <SaluText style={styles.titleText}>
+                  {buttonData.lastTitle_small}
+                </SaluText>
+              </TouchableOpacity>
+              {cardIdx <= 4 ? (
+                <Text style={styles.regularFont}>
+                  {cardIdx + 1} of {''}
+                  {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
+                </Text>
+              ) : (
+                <></>
+              )}
+            </View>
+            <View style={styles.progressView}>
+              <ProgressBar
+                data={questionnaires?.questionnaires?.[0]?.question_v2s}
+                cardIdx={cardIdx}
+              />
+            </View>
+            <View style={styles.swiperView}>
+              <Swiper
+                ref={swiper}
+                stackSeparation={20}
+                showSecondCard={true}
+                horizontalSwipe={false}
+                verticalSwipe={false}
+                swipeBackCard={true}
+                swipeAnimationDuration={cardIdx === 4 ? 0 : 350}
+                cards={questionnaires?.questionnaires?.[0]?.question_v2s || []}
+                renderCard={card => {
+                  return (
+                    <Card
+                      item={card}
+                      ref={swiper}
+                      multiple={card?.allow_multiple_answers}
+                      __typename={
+                        questionnaires?.questionnaires?.[0].__typename
+                      }
+                      id={questionnaires?.questionnaires?.[0]?.id}
+                      {...{onNext}}
+                      {...{onBack}}
+                      {...{cardIdx}}
+                      {...{caching}}
+                    />
+                  );
+                }}
+                onSwipedAll={() => {
+                  setShowResult(true);
+                }}
+                stackSize={3}
+                keyExtractor={keyExtractor}
+              />
+            </View>
+          </>
+        </View>
       )}
+      <Loader show={loading} />
     </View>
   );
 };
