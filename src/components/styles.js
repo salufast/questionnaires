@@ -12,7 +12,7 @@ export default StyleSheet.create({
     color: colors.darkGrey,
     alignSelf: 'center',
     width: wp(100),
-    left: Platform.OS === 'ios' ? wp(14) : wp(18),
+    left: Platform.OS === 'ios' ? wp(14) : wp(14),
   },
   container: {
     flex: 1,
@@ -185,11 +185,11 @@ export default StyleSheet.create({
   lastTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: hp(2),
-    width: wp(24),
-    justifyContent: 'space-between',
+    paddingHorizontal: hp(1),
+    width: wp(30),
+    justifyContent: 'space-evenly',
   },
-  titleText: {color: '#4CB5AB', fontSize: 17},
+  titleText: {color: '#4CB5AB', fontSize: 18, },
   finishedText: {
     color: colors.white,
     fontFamily: 'OpenSans-SemiBold',
