@@ -10,9 +10,7 @@ export default StyleSheet.create({
     fontSize: 16,
     fontFamily: 'OpenSans-Regular',
     color: colors.darkGrey,
-    alignSelf: 'center',
-    width: wp(100),
-    left: Platform.OS === 'ios' ? wp(14) : wp(18),
+    width: wp(56),
   },
   container: {
     flex: 1,
@@ -56,7 +54,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     height: hp(38),
-    marginVertical: hp(3),
+    marginBottom: hp(3),
   },
   options: {
     width: wp(77),
@@ -69,6 +67,8 @@ export default StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
+    marginTop: hp(1.2),
+    marginHorizontal: wp(1)
   },
   padSpace: {
     paddingHorizontal: wp(2.5),
@@ -78,6 +78,7 @@ export default StyleSheet.create({
   mainButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    bottom: hp(1.5),
   },
   m_button: {
     height: hp(6),
@@ -118,17 +119,17 @@ export default StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  resultText: {textAlign: 'center', marginVertical: hp(1)},
+  resultText: { marginVertical: hp(1),fontFamily: 'OpenSans-Regular', textAlign: 'center'},
   resultButton: {
     borderRadius: hp(8),
     backgroundColor: colors.teal,
     width: wp(70),
-    height: hp(6),
+    height: hp(5),
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: hp(1),
   },
-  resultButtonText: {fontSize: 16, color: colors.white, fontWeight: 'bold'},
+  resultButtonText: {fontSize: 14, color: colors.white, fontFamily: 'OpenSans-SemiBold'},
   cardNum: {
     marginTop: hp(1.5),
     flexDirection: 'row',
@@ -152,7 +153,7 @@ export default StyleSheet.create({
   },
   graphVal: {
     alignSelf: 'flex-end',
-    bottom: Platform.OS === 'ios' ? hp(37) : hp(31),
+    bottom: hp(37),
     fontSize: hp(4),
     color: colors.grey,
   },
@@ -173,7 +174,7 @@ export default StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  itemCenter: {alignItems: 'center'},
+  itemCenter: {alignItems: 'center', width: wp(80)},
   itemCenter1: {alignItems: 'center', marginVertical: hp(5)},
   checkMark: {
     position: 'absolute',
@@ -185,11 +186,11 @@ export default StyleSheet.create({
   lastTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: hp(2),
-    width: wp(24),
-    justifyContent: 'space-between',
+    paddingHorizontal: hp(-2),
+    width: wp(30),
+    justifyContent: 'space-evenly',
   },
-  titleText: {color: '#4CB5AB', fontSize: 17},
+  titleText: {color: '#4CB5AB', fontSize: hp(2.4), fontFamily: 'OpenSans-regular'},
   finishedText: {
     color: colors.white,
     fontFamily: 'OpenSans-SemiBold',

@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {useLazyQuery} from '@apollo/client';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import {GET_QUESTIONNAIRES} from '../apollo/questionnaire';
-import {View, Text, TouchableOpacity, Image,  } from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './styles';
 import Card from './Options';
 import Swiper from 'react-native-deck-swiper';
@@ -9,29 +9,23 @@ import {Smiley, Back} from '../utils/images';
 import ProgressBar from './ProgressBar';
 import {buttonData, resultData} from '../utils/constant';
 import Result from './Result';
-import {GET_QUESTIONNAIRE_ANSWERS} from '../apollo/questionnaire_answer';
-import {useQuery} from '@apollo/client';
+import {INSERT_QUESTIONNAIRE_ANSWER} from '../apollo/questionnaire_answer';
+import {useNavigation} from '@react-navigation/native';
+import {Loader} from './Loader';
 
-const QuestionnaireFastingProtocol = ({route, navigation}) => {
+const QuestionnaireFastingProtocol = ({route}) => {
   const {programDay} = route.params || {};
-  const [getQuestionnaires, {data: questionnaire_data}] =
+  const [getQuestionnaires, {data: questionnaire_data, loading}] =
     useLazyQuery(GET_QUESTIONNAIRES);
-  const [getAnswers, {data: questionnaire_ans}] = useLazyQuery(
-    GET_QUESTIONNAIRE_ANSWERS,
+  const [insert_questionnaire_answer_one] = useMutation(
+    INSERT_QUESTIONNAIRE_ANSWER,
   );
   const [showResult, setShowResult] = useState(false);
   const [cardIdx, setCardIdx] = useState(false);
   const [nowShow, setNowShow] = useState(false);
   const swiper = useRef(0);
   const swiper1 = useRef(0);
-
-  const {data} = useQuery(GET_QUESTIONNAIRE_ANSWERS, {
-    variables: {
-      whereQuestionnaireAnswers: {
-        _or: [{id: {_eq: '1'}}],
-      },
-    },
-  });
+  const navigation = useNavigation();
 
   useEffect(() => {
     getQuestionnaires({
@@ -70,6 +64,78 @@ const QuestionnaireFastingProtocol = ({route, navigation}) => {
       questionnaire => questionnaire.type === 'fasting_goals_reached',
     ) || {};
 
+  const onNext = () => {
+    setCardIdx(prev => prev + 1);
+  };
+  const onBack = () => {
+    setCardIdx(prev => prev - 1);
+  };
+
+  const caching = async (questionnaireAnswerValues, response, item) => {
+    const optimisticResponse = {
+      __typename: 'Mutation',
+      insert_questionnaire_answer_one: {
+        __typename: 'questionnaire_answer',
+        id: '2938283-2938473',
+        question_answer_v2s: [
+          {
+            __typename: 'question_answer_v2',
+            id: '23453-34434',
+            answer_text: response?.text,
+            question_v2: {
+              __typename: item.__typename,
+              id: item.id,
+              title: item.title,
+              index: item.index,
+              allow_multiple_answers: item.allow_multiple_answers,
+              type: item.type,
+            },
+            answer_v2: {
+              __typename: 'answer_v2',
+              id: response.id,
+              text: response?.text,
+              index: response?.index,
+            },
+          },
+        ],
+      },
+    };
+    await insert_questionnaire_answer_one({
+      variables: {questionnaireAnswerValues},
+      optimisticResponse,
+      update: async (cache, {data: {insert_questionnaire_answer_one}}) => {
+        const cacheId = cache.identify(insert_questionnaire_answer_one);
+
+        const questionAnswerV2Id = cache.identify(
+          insert_questionnaire_answer_one.question_answer_v2s[0],
+        );
+        const questionV2Id = cache.identify(
+          insert_questionnaire_answer_one.question_answer_v2s[0].question_v2,
+        );
+        const answerV2Id = cache.identify(
+          insert_questionnaire_answer_one.question_answer_v2s[0].answer_v2,
+        );
+        // Update the cache for the question_answer_v2 entity
+        cache.modify({
+          id: cacheId,
+          fields: {
+            question_answer_v2s(existingQuestionAnswerV2s = []) {
+              const updatedQuestionAnswerV2s = [
+                ...existingQuestionAnswerV2s,
+                questionAnswerV2Id,
+              ];
+              return updatedQuestionAnswerV2s;
+            },
+          },
+        });
+      },
+    });
+  };
+
+  const keyExtractor = item => {
+    return item?.id;
+  };
+
   return (
     <View style={styles.testContainer}>
       {showResult ? (
@@ -88,10 +154,11 @@ const QuestionnaireFastingProtocol = ({route, navigation}) => {
                 onPress={() => navigation.goBack()}>
                 <Image source={Back} />
                 <Text style={styles.titleText}>
-                  {'  '}{buttonData.lastTitle_small}
+                  {'  '}
+                  {buttonData.lastTitle_small}
                 </Text>
               </TouchableOpacity>
-              {cardIdx <= 4 ? (
+              {cardIdx <= 2 ? (
                 <Text style={styles.regularFont}>
                   {cardIdx + 1} of {''}
                   {fastingProtocolQuestionnaire?.question_v2s?.length}
@@ -115,17 +182,21 @@ const QuestionnaireFastingProtocol = ({route, navigation}) => {
               ref={swiper}
               stackSeparation={20}
               swipeBackCard={true}
-              disableLeftSwipe={true}
-              disableTopSwipe={true}
-              disableBottomSwipe={true}
+              horizontalSwipe={false}
+              verticalSwipe={false}
               cards={fastingProtocolQuestionnaire?.question_v2s || []}
               renderCard={card => {
-                setCardIdx(swiper?.current?.state?.firstCardIndex);
                 return (
                   <Card
                     item={card}
                     ref={swiper}
                     multiple={card?.allow_multiple_answers}
+                    __typename={fastingProtocolQuestionnaire?.__typename}
+                    id={fastingProtocolQuestionnaire?.id}
+                    {...{onNext}}
+                    {...{onBack}}
+                    {...{cardIdx}}
+                    {...{caching}}
                   />
                 );
               }}
@@ -135,7 +206,8 @@ const QuestionnaireFastingProtocol = ({route, navigation}) => {
                   setShowResult(false);
                 } else setShowResult(true);
               }}
-              stackSize={5}
+              stackSize={3}
+              keyExtractor={keyExtractor}
             />
           </View>
           {nowShow && (
@@ -159,17 +231,27 @@ const QuestionnaireFastingProtocol = ({route, navigation}) => {
                       item={card}
                       ref={swiper1}
                       multiple={card?.allow_multiple_answers}
+                      id={questionnaire_data?.questionnaires?.[0]?.id}
+                      __typename={
+                        questionnaire_data?.questionnaires?.[0].__typename
+                      }
+                      {...{onNext}}
+                      {...{onBack}}
+                      {...{cardIdx}}
+                      {...{caching}}
                     />
                   );
                 }}
                 onSwipedAll={() => {
                   setShowResult(true);
                 }}
+                keyExtractor={keyExtractor}
               />
             </View>
           )}
         </View>
       )}
+      <Loader show={loading} />
     </View>
   );
 };

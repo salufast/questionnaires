@@ -4,7 +4,6 @@ import {
   Animated,
   TouchableOpacity,
   Image,
-  Easing,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
 import styles from './styles';
@@ -18,12 +17,14 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import {useApolloClient} from '@apollo/client';
 
 const Result = ({title, description, image = null, type}) => {
   const [animation] = useState(new Animated.Value(0));
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const result = ['Owl', '92%', 'high Spirits'];
   const navigation = useNavigation();
+  const apolloClient = useApolloClient();
 
   useEffect(() => {
     const animationConfig = {
@@ -36,7 +37,6 @@ const Result = ({title, description, image = null, type}) => {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 2000,
-        easing: Easing.in,
         useNativeDriver: true,
       }).start();
     }, 200);
@@ -73,8 +73,9 @@ const Result = ({title, description, image = null, type}) => {
           <SaluText style={styles.resultText}>{description}</SaluText>
         </Animated.View>
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             navigation.navigate('questionnaires');
+            await apolloClient.clearStore();
           }}
           style={styles.resultButton}>
           <Animated.View style={[{opacity: fadeAnim}, styles.itemCenter]}>
