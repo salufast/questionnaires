@@ -178,7 +178,6 @@ const Card = React.forwardRef(
                 swiper?.current?.swipeLeft();
               }
               if (response) {
-                onNext();
                 const questionnaireAnswerValues = {
                   question_answer_v2s: {
                     data: [
@@ -192,9 +191,15 @@ const Card = React.forwardRef(
                   questionnaire_id: id,
                 };
                 caching(questionnaireAnswerValues, response, item);
+                onNext();
               }
-            }}>
-            <NextButtonn />
+            }}
+            style={[styles.m_button, {backgroundColor: colors.teal}]}>
+            <Text style={styles.finishedText}>
+              {swiper?.current?.state?.firstCardIndex === 4
+                ? buttonData?.finished
+                : buttonData?.next}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

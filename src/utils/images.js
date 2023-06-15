@@ -11,7 +11,7 @@ export const Checkbox = require('../../assets/icons/CheckBox.png');
 export const Back = require('../../assets/icons/back.png');
 
 // svg and images
-export default NextButtonn = () => {
+export const NextButtonn = () => {
   return (
     <Svg
       width="139"

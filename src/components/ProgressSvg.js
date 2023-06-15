@@ -24,9 +24,8 @@ const SemiCircleProgressBar = ({percentage}) => {
         }}
         startAngle={-90}
         endAngle={90}
-        labelComponent={<VictoryTooltip />}
-        >
-      </VictoryPie>
+        labelComponent={<></>}
+        />
     </View>
   );
 };

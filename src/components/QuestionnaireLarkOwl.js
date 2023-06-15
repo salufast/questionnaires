@@ -98,8 +98,8 @@ const QuestionnaireLarkOwl = () => {
     });
   };
 
-  const keyExtractor = (item, index) => {
-    return `${item?.id}-${index}`;
+  const keyExtractor = item => {
+    return item?.id;
   };
 
   return (

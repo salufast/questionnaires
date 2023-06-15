@@ -132,8 +132,8 @@ const QuestionnaireFastingProtocol = ({route}) => {
     });
   };
 
-  const keyExtractor = (item, index) => {
-    return `${item?.id}-${index}`;
+  const keyExtractor = item => {
+    return item?.id;
   };
 
   return (
@@ -207,6 +207,7 @@ const QuestionnaireFastingProtocol = ({route}) => {
                 } else setShowResult(true);
               }}
               stackSize={3}
+              keyExtractor={keyExtractor}
             />
           </View>
           {nowShow && (

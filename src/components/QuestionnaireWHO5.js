@@ -97,8 +97,8 @@ const QuestionnaireWHO5 = () => {
     setCardIdx(prev => prev - 1);
   };
 
-  const keyExtractor = (item, index) => {
-    return `${item?.id}-${index}`;
+  const keyExtractor = item => {
+    return item?.id;
   };
 
   return (
