@@ -67,6 +67,8 @@ export default StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
+    marginTop: hp(1.2),
+    marginHorizontal: wp(1)
   },
   padSpace: {
     paddingHorizontal: wp(2.5),
@@ -76,6 +78,7 @@ export default StyleSheet.create({
   mainButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    bottom: hp(1.5),
   },
   m_button: {
     height: hp(6),

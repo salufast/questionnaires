@@ -99,108 +99,119 @@ const Card = React.forwardRef(
 
     return (
       <View style={styles.card}>
-        <View>
-          <SaluText style={styles.chooseAns}>
-            {buttonData?.chooseAnswer}
-          </SaluText>
-          <SaluTitle style={{height: hp(14.8)}}>{item?.title}</SaluTitle>
-          <View style={styles.questOpt}>
-            {item?.answer_v2s.map((item, index) => {
-              const optionSelected = isCorrectOption(item);
-              return (
-                <TouchableOpacity
-                  disabled={disabled}
-                  key={index}
-                  activeOpacity={0.7}
-                  style={[
-                    styles.options,
-                    {
-                      backgroundColor: optionSelected
-                        ? colors.greenCorrect
-                        : colors.grey98,
-                    },
-                  ]}
-                  onPress={() => {
-                    setResponse(item);
-                    multiple
-                      ? handleOptionSelection(item.id)
-                      : handleSelectOption(item.id);
-                  }}>
-                  <Animated.View
-                    style={[
-                      {
-                        transform: [
-                          {scale: optionSelected ? scaleValue : 0.75},
-                        ],
-                      },
-                    ]}>
-                    <Image source={multiple ? Checkbox : Radio} />
-                    {optionSelected && (
-                      <Image source={Checkmark} style={styles.checkMark} />
-                    )}
-                    {multiSelect.includes(item.id) && (
-                      <Image source={Checkmark} style={styles.checkMark} />
-                    )}
-                  </Animated.View>
-                  <SaluText
-                    style={[
-                      styles.padSpace,
-                      optionSelected && {color: colors.white},
-                    ]}>
-                    {item?.text}
-                  </SaluText>
-                </TouchableOpacity>
-              );
-            })}
+        <View style={{flex: 1}}>
+          <View style={{flex: 1}}>
+            <SaluText style={styles.chooseAns}>
+              {buttonData?.chooseAnswer}
+            </SaluText>
+            <SaluTitle
+              style={{
+                height: hp(14.8),
+              }}>
+              {item?.title}
+            </SaluTitle>
+            <View style={styles.questOpt}>
+              <ScrollView
+                contentContainerStyle={{flexGrow: 1}}
+                showsVerticalScrollIndicator={false}>
+                {item?.answer_v2s.map((item, index) => {
+                  const optionSelected = isCorrectOption(item);
+                  return (
+                    <TouchableOpacity
+                      disabled={disabled}
+                      key={index}
+                      activeOpacity={0.7}
+                      style={[
+                        styles.options,
+                        {
+                          backgroundColor: optionSelected
+                            ? colors.greenCorrect
+                            : colors.grey98,
+                        },
+                      ]}
+                      onPress={() => {
+                        setResponse(item);
+                        multiple
+                          ? handleOptionSelection(item.id)
+                          : handleSelectOption(item.id);
+                      }}>
+                      <Animated.View
+                        style={[
+                          {
+                            transform: [
+                              {scale: optionSelected ? scaleValue : 0.75},
+                            ],
+                          },
+                        ]}>
+                        <Image source={multiple ? Checkbox : Radio} />
+                        {optionSelected && (
+                          <Image source={Checkmark} style={styles.checkMark} />
+                        )}
+                        {multiSelect.includes(item.id) && (
+                          <Image source={Checkmark} style={styles.checkMark} />
+                        )}
+                      </Animated.View>
+                      <SaluText
+                        style={[
+                          styles.padSpace,
+                          optionSelected && {color: colors.white},
+                        ]}>
+                        {item?.text}
+                      </SaluText>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
           </View>
-        </View>
-        <View style={styles.mainButton}>
-          <TouchableOpacity
-            disabled={swiper?.current?.state?.firstCardIndex === 0}
-            style={styles.m_button_back}
-            onPress={() => {
-              swiper.current.swipeBack();
-              onBack();
-            }}>
-            <Text
-              style={[
-                styles.backText,
-                {
-                  opacity: swiper?.current?.state?.firstCardIndex < 1 ? 0 : 1,
-                },
-              ]}>
-              {buttonData?.back}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (response || disabled) {
-                swiper?.current?.swipeLeft();
-              }
-              if (response) {
-                const questionnaireAnswerValues = {
-                  question_answer_v2s: {
-                    data: [
-                      {
-                        answer_text: response?.text,
-                        answer_v2_id: response?.id,
-                        question_v2_id: item?.id,
-                      },
-                    ],
+          <View style={styles.mainButton}>
+            <TouchableOpacity
+              disabled={swiper?.current?.state?.firstCardIndex === 0}
+              style={styles.m_button_back}
+              onPress={() => {
+                swiper.current.swipeBack();
+                onBack();
+              }}>
+              <Text
+                style={[
+                  styles.backText,
+                  {
+                    opacity: swiper?.current?.state?.firstCardIndex < 1 ? 0 : 1,
                   },
-                  questionnaire_id: id,
-                };
-                caching(questionnaireAnswerValues, response, item);
-                onNext();
-              }
-            }}
-            style={[styles.m_button, {backgroundColor: colors.teal}]}>
-            <Text style={styles.finishedText}>
-              {swiper?.current?.state?.firstCardIndex === 4
-                ? buttonData?.finished
-                : buttonData?.next}
-            </Text>
-          </TouchableOpacity>
+                ]}>
+                {buttonData?.back}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (response || disabled) {
+                  swiper?.current?.swipeLeft();
+                }
+                if (response) {
+                  const questionnaireAnswerValues = {
+                    question_answer_v2s: {
+                      data: [
+                        {
+                          answer_text: response?.text,
+                          answer_v2_id: response?.id,
+                          question_v2_id: item?.id,
+                        },
+                      ],
+                    },
+                    questionnaire_id: id,
+                  };
+                  caching(questionnaireAnswerValues, response, item);
+                  onNext();
+                }
+              }}
+              style={[styles.m_button, {backgroundColor: colors.teal}]}>
+              <Text style={styles.finishedText}>
+                {swiper?.current?.state?.firstCardIndex === 4
+                  ? buttonData?.finished
+                  : buttonData?.next}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
