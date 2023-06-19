@@ -6,11 +6,13 @@ const ProgressBar = ({data, cardIdx}) => {
   const [cardIndex, setCardIndex] = useState(1);
 
   useEffect(() => {
-    setCardIndex(cardIdx+1)
+    if (cardIdx > 0) {
+      setCardIndex(cardIdx + 1);
+    } else setCardIndex(1);
     return () => {
-      setCardIndex(1)
-    }
-  })
+      setCardIndex(1);
+    };
+  });
 
   return data?.map((item, index) => {
     return (

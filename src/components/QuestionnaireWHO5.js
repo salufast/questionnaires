@@ -20,7 +20,7 @@ const QuestionnaireWHO5 = () => {
     INSERT_QUESTIONNAIRE_ANSWER,
   );
   const swiper = useRef();
-  const [cardIdx, setCardIdx] = useState(false);
+  const [cardIdx, setCardIdx] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const navigation = useNavigation();
 
@@ -122,14 +122,15 @@ const QuestionnaireWHO5 = () => {
                 {buttonData.lastTitle_small}
               </Text>
             </TouchableOpacity>
-            {cardIdx <= 4 ? (
-              <Text style={styles.regularFont}>
-                {cardIdx + 1} of {''}
-                {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
-              </Text>
-            ) : (
-              <></>
-            )}
+            {cardIdx <=
+              questionnaires?.questionnaires?.[0]?.question_v2s?.length - 1 ? (
+                <Text style={styles.regularFont}>
+                  {cardIdx > 0 ? cardIdx + 1 : '1'} of {''}
+                  {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
+                </Text>
+              ) : (
+                <></>
+              )}
           </View>
           <View style={styles.progressView}>
             <ProgressBar

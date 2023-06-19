@@ -153,16 +153,16 @@ export default StyleSheet.create({
   },
   graphVal: {
     alignSelf: 'flex-end',
-    bottom: hp(37),
     fontSize: hp(4),
     color: colors.grey,
   },
   graphValView: {
+    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     width: wp(85),
-    marginHorizontal: wp(13.5),
+    top: hp(22),
+    right: wp(3),
   },
   questNum: {backgroundColor: colors.whiteSmoke, flex: 1},
   resultPage: {
@@ -181,7 +181,7 @@ export default StyleSheet.create({
     top: Platform.OS === 'ios' ? hp(0.75) : hp(0.5),
     left: wp(0.8),
   },
-  semiCircle: {height: hp(40), alignItems: 'center'},
+  semiCircle: {flex: 0.5, alignItems: 'center'},
   resultPic: {height: hp(35), alignItems: 'center'},
   lastTitle: {
     flexDirection: 'row',

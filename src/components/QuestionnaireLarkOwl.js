@@ -21,7 +21,7 @@ const QuestionnaireLarkOwl = () => {
     INSERT_QUESTIONNAIRE_ANSWER,
   );
   const swiper = useRef();
-  const [cardIdx, setCardIdx] = useState(false);
+  const [cardIdx, setCardIdx] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const navigation = useNavigation();
 
@@ -36,12 +36,13 @@ const QuestionnaireLarkOwl = () => {
       },
     });
   }, []);
-
+  
   const onNext = () => {
-    setCardIdx(prev => prev + 1);
+      setCardIdx(prev => prev + 1);
   };
+  
   const onBack = () => {
-    setCardIdx(prev => prev - 1);
+      setCardIdx(prev => prev - 1);
   };
 
   const caching = async (questionnaireAnswerValues, response, item) => {
@@ -125,9 +126,10 @@ const QuestionnaireLarkOwl = () => {
                   {buttonData.lastTitle_small}
                 </SaluText>
               </TouchableOpacity>
-              {cardIdx <= 4 ? (
+              {cardIdx <=
+              questionnaires?.questionnaires?.[0]?.question_v2s?.length - 1 ? (
                 <Text style={styles.regularFont}>
-                  {cardIdx + 1} of {''}
+                  {cardIdx > 0 ? cardIdx + 1 : '1'} of {''}
                   {questionnaires?.questionnaires?.[0]?.question_v2s?.length}
                 </Text>
               ) : (
@@ -142,6 +144,7 @@ const QuestionnaireLarkOwl = () => {
             </View>
             <View style={styles.swiperView}>
               <Swiper
+                cardIndex={cardIdx}
                 ref={swiper}
                 stackSeparation={20}
                 showSecondCard={true}
