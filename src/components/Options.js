@@ -20,6 +20,80 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 
+const Button = ({
+  cardIdx,
+  swiper,
+  disabled,
+  onNext,
+  onBack,
+  response,
+  id,
+  item,
+  caching,
+}) => {
+  const [disable, setDisable] = useState(false);
+
+  useEffect(() => {
+    if (disable) {
+      setTimeout(() => {
+        setDisable(false);
+      }, 500);
+    }
+  }, [disable, cardIdx]);
+
+  return (
+    <>
+      {cardIdx > 0 ? (
+        <TouchableOpacity
+          disabled={cardIdx === 0 || disable}
+          style={styles.m_button_back}
+          onPress={() => {
+            if (cardIdx >= 0) {
+              setDisable(true);
+              onBack();
+            }
+            swiper.current.swipeBack();
+          }}>
+          <Text style={styles.backText}>{buttonData?.back}</Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.m_button_back} />
+      )}
+      <TouchableOpacity
+        disabled={disable}
+        onPress={() => {
+          if (response || disabled) {
+            setDisable(true);
+            onNext();
+            swiper?.current?.swipeLeft();
+          }
+          if (response) {
+            const questionnaireAnswerValues = {
+              question_answer_v2s: {
+                data: [
+                  {
+                    answer_text: response?.text,
+                    answer_v2_id: response?.id,
+                    question_v2_id: item?.id,
+                  },
+                ],
+              },
+              questionnaire_id: id,
+            };
+            caching(questionnaireAnswerValues, response, item);
+          }
+        }}
+        style={[styles.m_button, {backgroundColor: colors.teal}]}>
+        <Text style={styles.finishedText}>
+          {swiper?.current?.state?.firstCardIndex === 4
+            ? buttonData?.finished
+            : buttonData?.next}
+        </Text>
+      </TouchableOpacity>
+    </>
+  );
+};
+
 const Card = React.forwardRef(
   ({item, id, caching, onNext, onBack, cardIdx, multiple}, swiper) => {
     const scaleValue = useRef(new Animated.Value(1)).current;
@@ -181,53 +255,17 @@ const Card = React.forwardRef(
             </View>
           </View>
           <View style={styles.mainButton}>
-            {cardIdx > 0 ? (
-              <TouchableOpacity
-                disabled={cardIdx === 0 || disable}
-                style={styles.m_button_back}
-                onPress={() => {
-                  if (cardIdx >= 0) {
-                    setDisable(true);
-                    onBack();
-                  }
-                  swiper.current.swipeBack();
-                }}>
-                <Text style={styles.backText}>{buttonData?.back}</Text>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.m_button_back} />
-            )}
-            <TouchableOpacity
-              disabled={disable}
-              onPress={() => {
-                if (response || disabled) {
-                  setDisable(true);
-                  onNext();
-                  swiper?.current?.swipeLeft();
-                }
-                if (response) {
-                  const questionnaireAnswerValues = {
-                    question_answer_v2s: {
-                      data: [
-                        {
-                          answer_text: response?.text,
-                          answer_v2_id: response?.id,
-                          question_v2_id: item?.id,
-                        },
-                      ],
-                    },
-                    questionnaire_id: id,
-                  };
-                  caching(questionnaireAnswerValues, response, item);
-                }
-              }}
-              style={[styles.m_button, {backgroundColor: colors.teal}]}>
-              <Text style={styles.finishedText}>
-                {swiper?.current?.state?.firstCardIndex === 4
-                  ? buttonData?.finished
-                  : buttonData?.next}
-              </Text>
-            </TouchableOpacity>
+            <Button
+              {...{cardIdx}}
+              {...{onNext}}
+              {...{onBack}}
+              {...{disabled}}
+              {...{swiper}}
+              {...{response}}
+              {...{id}}
+              {...{item}}
+              {...{caching}}
+            />
           </View>
         </View>
       </View>
