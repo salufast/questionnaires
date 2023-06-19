@@ -68,7 +68,7 @@ const QuestionnaireContainer = ({ navigation }) => {
     />
 
     <SaluText style={{ marginTop: 20, textAlign: 'center' }}>
-      Questionnaires based on ones day progress during a digital program
+      Questionnaires based on one day progress during a digital program
     </SaluText>
 
     <View style={{ marginTop: 20 }}>

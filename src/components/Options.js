@@ -1,4 +1,11 @@
-import {Text, View, TouchableOpacity, Image, Animated} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Animated,
+  ScrollView,
+} from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import SaluTitle from '../saluComponents/SaluTitle';
 import SaluText from '../saluComponents/SaluText';
@@ -21,6 +28,15 @@ const Card = React.forwardRef(
     const [multiSelect, setMultiSelect] = useState([]);
     const [response, setResponse] = useState(null);
     const [cacheAns, setCacheAns] = useState([]);
+    const [disable, setDisable] = useState(false);
+
+    useEffect(() => {
+      if (disable) {
+        setTimeout(() => {
+          setDisable(false);
+        }, 500);
+      }
+    }, [disable, cardIdx]);
 
     useEffect(() => {
       const cacheAnswer = [];
@@ -165,26 +181,28 @@ const Card = React.forwardRef(
             </View>
           </View>
           <View style={styles.mainButton}>
+            {cardIdx > 0 ? (
+              <TouchableOpacity
+                disabled={cardIdx === 0 || disable}
+                style={styles.m_button_back}
+                onPress={() => {
+                  if (cardIdx >= 0) {
+                    setDisable(true);
+                    onBack();
+                  }
+                  swiper.current.swipeBack();
+                }}>
+                <Text style={styles.backText}>{buttonData?.back}</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={styles.m_button_back} />
+            )}
             <TouchableOpacity
-              disabled={swiper?.current?.state?.firstCardIndex === 0}
-              style={styles.m_button_back}
-              onPress={() => {
-                swiper.current.swipeBack();
-                onBack();
-              }}>
-              <Text
-                style={[
-                  styles.backText,
-                  {
-                    opacity: swiper?.current?.state?.firstCardIndex < 1 ? 0 : 1,
-                  },
-                ]}>
-                {buttonData?.back}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              disabled={disable}
               onPress={() => {
                 if (response || disabled) {
+                  setDisable(true);
+                  onNext();
                   swiper?.current?.swipeLeft();
                 }
                 if (response) {
@@ -201,7 +219,6 @@ const Card = React.forwardRef(
                     questionnaire_id: id,
                   };
                   caching(questionnaireAnswerValues, response, item);
-                  onNext();
                 }
               }}
               style={[styles.m_button, {backgroundColor: colors.teal}]}>
