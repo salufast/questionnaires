@@ -232,6 +232,7 @@ const Card = React.forwardRef(
                               {scale: optionSelected ? scaleValue : 0.75},
                             ],
                           },
+                          {alignItems: 'center', justifyContent: 'center'},
                         ]}>
                         <Image source={multiple ? Checkbox : Radio} />
                         {optionSelected && (

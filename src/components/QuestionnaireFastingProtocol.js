@@ -163,7 +163,7 @@ const QuestionnaireFastingProtocol = ({route}) => {
                   {cardIdx + 1} of {''}
                   {fastingProtocolQuestionnaire?.question_v2s?.length}
                 </Text>
-              ) : (
+              ) : ( 
                 <></>
               )}
             </View>
@@ -214,10 +214,9 @@ const QuestionnaireFastingProtocol = ({route}) => {
             <View>
               <Swiper
                 ref={swiper1}
-                disableLeftSwipe={true}
-                disableTopSwipe={true}
+                horizontalSwipe={false}
+                verticalSwipe={false}
                 swipeAnimationDuration={0}
-                disableBottomSwipe={true}
                 cards={
                   programDay === 0
                     ? fastingGoalsQuestionnaire?.question_v2s
