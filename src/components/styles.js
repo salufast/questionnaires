@@ -68,7 +68,7 @@ export default StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
     marginTop: hp(1.2),
-    marginHorizontal: wp(1)
+    marginHorizontal: wp(1),
   },
   padSpace: {
     paddingHorizontal: wp(2.5),
@@ -119,7 +119,11 @@ export default StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  resultText: { marginVertical: hp(1),fontFamily: 'OpenSans-Regular', textAlign: 'center'},
+  resultText: {
+    marginVertical: hp(1),
+    fontFamily: 'OpenSans-Regular',
+    textAlign: 'center',
+  },
   resultButton: {
     borderRadius: hp(8),
     backgroundColor: colors.teal,
@@ -129,7 +133,11 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginTop: hp(1),
   },
-  resultButtonText: {fontSize: 14, color: colors.white, fontFamily: 'OpenSans-SemiBold'},
+  resultButtonText: {
+    fontSize: 14,
+    color: colors.white,
+    fontFamily: 'OpenSans-SemiBold',
+  },
   cardNum: {
     marginTop: hp(1.5),
     flexDirection: 'row',
@@ -146,10 +154,9 @@ export default StyleSheet.create({
     elevation: 5,
   },
   midVal: {
-    alignSelf: 'center',
-    bottom: Platform.OS === 'ios' ? hp(37) : hp(31),
     fontSize: hp(7),
     color: colors.teal,
+    position: 'absolute',
   },
   graphVal: {
     alignSelf: 'flex-end',
@@ -157,12 +164,11 @@ export default StyleSheet.create({
     color: colors.grey,
   },
   graphValView: {
+    height: hp(10),
     position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: wp(85),
-    top: hp(22),
-    right: wp(3),
+    width: wp(90),
   },
   questNum: {backgroundColor: colors.whiteSmoke, flex: 1},
   resultPage: {
@@ -175,13 +181,11 @@ export default StyleSheet.create({
     elevation: 5,
   },
   itemCenter: {alignItems: 'center', width: wp(80)},
-  itemCenter1: {alignItems: 'center', marginVertical: hp(5)},
+  itemCenter1: {alignItems: 'center', marginVertical: hp(5), flex: 1},
   checkMark: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? hp(0.75) : hp(0.5),
-    left: wp(0.8),
   },
-  semiCircle: {flex: 0.5, alignItems: 'center'},
+  semiCircle: {flex: 1, alignItems: 'center', justifyContent: 'center'},
   resultPic: {height: hp(35), alignItems: 'center'},
   lastTitle: {
     flexDirection: 'row',
@@ -190,7 +194,11 @@ export default StyleSheet.create({
     width: wp(30),
     justifyContent: 'space-evenly',
   },
-  titleText: {color: '#4CB5AB', fontSize: hp(2.4), fontFamily: 'OpenSans-regular'},
+  titleText: {
+    color: '#4CB5AB',
+    fontSize: hp(2.4),
+    fontFamily: 'OpenSans-regular',
+  },
   finishedText: {
     color: colors.white,
     fontFamily: 'OpenSans-SemiBold',

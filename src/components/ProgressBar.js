@@ -9,9 +9,6 @@ const ProgressBar = ({data, cardIdx}) => {
     if (cardIdx > 0) {
       setCardIndex(cardIdx + 1);
     } else setCardIndex(1);
-    return () => {
-      setCardIndex(1);
-    };
   });
 
   return data?.map((item, index) => {
